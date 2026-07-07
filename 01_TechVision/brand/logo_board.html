@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Logo board - premium tech</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #050608;
+      color: #f6f7f9;
+      font-family: Inter, Manrope, "Segoe UI", Arial, sans-serif;
+    }
+    main {
+      max-width: 1420px;
+      margin: 0 auto;
+      padding: 44px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 46px;
+      line-height: 1;
+      letter-spacing: 0;
+      font-weight: 680;
+    }
+    p {
+      max-width: 760px;
+      margin: 0 0 32px;
+      color: #aeb6c2;
+      font-size: 18px;
+      line-height: 1.45;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+    .tile {
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      background: #f4f4f2;
+      box-shadow: 0 26px 80px rgba(0,0,0,.32);
+    }
+    .tile.recommended {
+      border-color: rgba(220,231,245,.72);
+      box-shadow: 0 0 0 1px rgba(220,231,245,.26), 0 30px 90px rgba(0,0,0,.38);
+    }
+    img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1280 / 760;
+      background: #f4f4f2;
+    }
+    .caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px 18px;
+      background: #0d1015;
+      color: #f6f7f9;
+      font-size: 15px;
+    }
+    .caption span:last-child {
+      color: #aeb6c2;
+      text-align: right;
+    }
+    @media (max-width: 880px) {
+      main { padding: 24px; }
+      .grid { grid-template-columns: 1fr; }
+      h1 { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Logo board: premium tech</h1>
+    <p>Пять направлений для вымышленной IT-компании в стиле текущей презентации: спокойная премиальность, чёрно-белая основа, минимум эффектов, хороший вид на тёмных и светлых слайдах.</p>
+    <section class="grid">
+      <article class="tile recommended">
+        <img src="svg/01_noverra.svg" alt="Noverra">
+        <div class="caption"><strong>Noverra</strong><span>Рекомендую: лучше всего совпадает с презентацией.</span></div>
+      </article>
+      <article class="tile">
+        <img src="svg/02_aureon.svg" alt="Aureon">
+        <div class="caption"><strong>Aureon</strong><span>Более люксовый монограммный вариант.</span></div>
+      </article>
+      <article class="tile">
+        <img src="svg/03_velora.svg" alt="Velora">
+        <div class="caption"><strong>Velora</strong><span>Мягкий премиальный знак, менее B2B.</span></div>
+      </article>
+      <article class="tile">
+        <img src="svg/04_arcline.svg" alt="Arcline">
+        <div class="caption"><strong>Arcline</strong><span>Процесс, рост, консалтинг.</span></div>
+      </article>
+      <article class="tile">
+        <img src="svg/05_lumeniq.svg" alt="LumenIQ">
+        <div class="caption"><strong>LumenIQ</strong><span>Более футуристичный tech-образ.</span></div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

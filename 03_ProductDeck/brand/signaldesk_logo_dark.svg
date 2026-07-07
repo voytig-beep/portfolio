@@ -1,0 +1,8 @@
+<svg width="244" height="52" viewBox="0 0 244 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="52" height="52" rx="16" fill="#F7F4ED"/>
+  <path d="M17 34C24 22 31 22 38 34" stroke="#0B1013" stroke-width="4" stroke-linecap="round"/>
+  <path d="M20 24C25.6 15.5 31.4 15.5 37 24" stroke="#55D6FF" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="27" cy="36" r="4" fill="#FF8066"/>
+  <text x="66" y="25" fill="#F7F4ED" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="760">SignalDesk</text>
+  <text x="67" y="42" fill="#A7B3B8" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="2.2">OPERATIONS OS</text>
+</svg>

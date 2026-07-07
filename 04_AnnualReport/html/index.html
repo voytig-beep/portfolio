@@ -1,0 +1,1212 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asteria Group - годовой отчет 2025</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7f1e6;
+      --paper-2: #efe6d8;
+      --ink: #152234;
+      --muted: #66727f;
+      --line: rgba(21, 34, 52, .14);
+      --navy: #101b2a;
+      --teal: #0e8a83;
+      --teal-soft: rgba(14, 138, 131, .14);
+      --amber: #d7a446;
+      --rose: #d9665b;
+      --white: #fffaf1;
+      font-family: Inter, Manrope, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: #dfe4df;
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #dfe4df;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(520px, 1.1fr);
+      gap: clamp(44px, 5vw, 96px);
+      align-items: center;
+      padding: clamp(56px, 5.2vw, 96px);
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+      transform: translateX(20px);
+      transition: opacity .34s ease, transform .34s ease;
+      background:
+        linear-gradient(120deg, rgba(255,250,241,.96), rgba(247,241,230,.88)),
+        var(--paper);
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        linear-gradient(rgba(21,34,52,.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(21,34,52,.055) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(90deg, rgba(0,0,0,.9), rgba(0,0,0,.62), transparent 86%);
+    }
+
+    .slide::after {
+      content: "";
+      position: absolute;
+      inset: auto -12% -28% auto;
+      width: 48vw;
+      height: 48vw;
+      z-index: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(14,138,131,.16), transparent 66%);
+    }
+
+    .slide.dark {
+      color: var(--white);
+      background:
+        linear-gradient(120deg, rgba(16,27,42,.98), rgba(16,27,42,.84)),
+        var(--navy);
+    }
+
+    .slide.dark::before {
+      background:
+        linear-gradient(rgba(255,250,241,.065) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,250,241,.065) 1px, transparent 1px);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    body.export .slide { transition: none; }
+    body.export .controls { display: none; }
+
+    .brand {
+      position: absolute;
+      z-index: 5;
+      top: clamp(24px, 3vw, 44px);
+      left: clamp(32px, 5.2vw, 96px);
+    }
+
+    .brand img {
+      display: block;
+      width: clamp(196px, 15vw, 286px);
+      height: auto;
+    }
+
+    .page-no {
+      position: absolute;
+      z-index: 5;
+      top: clamp(28px, 3vw, 46px);
+      right: clamp(32px, 5.2vw, 96px);
+      color: rgba(21,34,52,.48);
+      font-size: 13px;
+      font-weight: 820;
+      letter-spacing: 2px;
+    }
+
+    .dark .page-no { color: rgba(255,250,241,.54); }
+
+    .content,
+    .visual,
+    .wide {
+      position: relative;
+      z-index: 2;
+      min-width: 0;
+    }
+
+    .content { max-width: 850px; padding-top: 34px; }
+
+    .eyebrow {
+      margin: 0 0 20px;
+      color: var(--teal);
+      font-size: clamp(13px, 1vw, 16px);
+      line-height: 1.3;
+      font-weight: 840;
+      text-transform: uppercase;
+    }
+
+    .dark .eyebrow { color: #72d2c9; }
+
+    h1,
+    h2 {
+      margin: 0;
+      max-width: 950px;
+      font-weight: 820;
+      letter-spacing: 0;
+      line-height: .96;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+
+    h1 { font-size: clamp(58px, 7vw, 122px); }
+    h2 { font-size: clamp(44px, 5.1vw, 86px); }
+
+    .cover-title {
+      font-size: clamp(54px, 6.1vw, 104px);
+      line-height: .94;
+    }
+
+    p {
+      margin: 22px 0 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: clamp(18px, 1.35vw, 25px);
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .dark p { color: rgba(255,250,241,.72); }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    .chip {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,250,241,.62);
+      color: rgba(21,34,52,.75);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .dark .chip {
+      border-color: rgba(255,250,241,.16);
+      background: rgba(255,250,241,.08);
+      color: rgba(255,250,241,.78);
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.78);
+      box-shadow: 0 28px 90px rgba(21, 34, 52, .13);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .dark .panel {
+      border-color: rgba(255,250,241,.16);
+      background: rgba(255,250,241,.08);
+      box-shadow: 0 30px 90px rgba(0,0,0,.24);
+    }
+
+    .report-cover {
+      min-height: 620px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 30px;
+    }
+
+    .cover-top,
+    .panel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: rgba(21,34,52,.66);
+      font-size: 13px;
+      font-weight: 820;
+    }
+
+    .dark .cover-top,
+    .dark .panel-top {
+      color: rgba(255,250,241,.72);
+    }
+
+    .dots { display: flex; gap: 8px; }
+    .dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(21,34,52,.28);
+    }
+
+    .dark .dots span {
+      background: rgba(255,250,241,.34);
+    }
+
+    .cover-year {
+      align-self: center;
+      display: grid;
+      gap: 18px;
+    }
+
+    .cover-year strong {
+      display: block;
+      color: var(--ink);
+      font-size: clamp(82px, 8vw, 150px);
+      line-height: .8;
+      letter-spacing: 0;
+    }
+
+    .cover-year span {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .dark .cover-year strong {
+      color: var(--white);
+    }
+
+    .dark .cover-year span {
+      color: rgba(255,250,241,.72);
+    }
+
+    .mini-bars {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 12px;
+      align-items: end;
+      height: 150px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    .mini-bars i,
+    .bar i,
+    .waterfall i {
+      display: block;
+      border-radius: 10px 10px 0 0;
+      background: linear-gradient(180deg, var(--teal), rgba(14,138,131,.18));
+    }
+
+    .mini-bars i:nth-child(2n) { background: linear-gradient(180deg, var(--amber), rgba(215,164,70,.18)); }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .stat {
+      min-height: 214px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.74);
+      display: grid;
+      align-content: space-between;
+      transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease;
+    }
+
+    .stat:hover {
+      transform: translateY(-4px);
+      border-color: rgba(14,138,131,.36);
+      box-shadow: 0 22px 54px rgba(21,34,52,.12);
+    }
+
+    .stat small,
+    .card small {
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 840;
+      text-transform: uppercase;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 32px;
+      color: var(--ink);
+      font-size: clamp(34px, 3.4vw, 58px);
+      line-height: .9;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.36;
+    }
+
+    .wide {
+      width: 100%;
+      grid-column: 1 / -1;
+      padding-top: 32px;
+    }
+
+    .slide.full {
+      grid-template-columns: 1fr;
+      align-items: stretch;
+      gap: 28px;
+    }
+
+    .slide.full .wide h2 { max-width: 1100px; }
+
+    .chart-layout {
+      display: grid;
+      grid-template-columns: .36fr .64fr;
+      gap: 22px;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    .chart-frame {
+      min-height: 560px;
+      padding: 28px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 24px;
+    }
+
+    .panel-top { min-height: 34px; }
+
+    .chart-bars {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 20px;
+      align-items: end;
+      height: 360px;
+      border-bottom: 1px solid var(--line);
+      padding: 0 8px;
+    }
+
+    .bar {
+      display: grid;
+      gap: 10px;
+      align-items: end;
+      height: 100%;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 760;
+      text-align: center;
+    }
+
+    .bar i {
+      min-height: 24px;
+      transition: height .6s ease, background .3s ease;
+    }
+
+    .bar:nth-child(3n) i { background: linear-gradient(180deg, var(--amber), rgba(215,164,70,.18)); }
+
+    .mode-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .mode-buttons button,
+    .controls button {
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .mode-buttons button {
+      min-height: 40px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,250,241,.72);
+      color: rgba(21,34,52,.72);
+      font-size: 13px;
+      font-weight: 780;
+    }
+
+    .mode-buttons button.active {
+      background: var(--ink);
+      color: var(--white);
+      border-color: var(--ink);
+    }
+
+    .mode-panel { display: none; }
+    .mode-panel.active,
+    body.export .mode-panel:first-child { display: block; }
+    body.export .mode-panel:not(:first-child) { display: none; }
+
+    .side-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .side-note {
+      min-height: 126px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.72);
+    }
+
+    .side-note b {
+      display: block;
+      color: var(--ink);
+      font-size: 25px;
+      line-height: 1;
+    }
+
+    .side-note span {
+      display: block;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.36;
+    }
+
+    .waterfall-wrap {
+      display: grid;
+      grid-template-columns: .92fr 1.08fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .waterfall {
+      min-height: 470px;
+      padding: 28px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 18px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .waterfall div {
+      display: grid;
+      gap: 10px;
+      align-items: end;
+      height: 100%;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      font-weight: 760;
+    }
+
+    .waterfall .down i {
+      background: linear-gradient(180deg, var(--rose), rgba(217,102,91,.18));
+    }
+
+    .bridge-list,
+    .priority-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .bridge-list div,
+    .priority {
+      min-height: 96px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.72);
+      display: grid;
+      gap: 8px;
+    }
+
+    .bridge-list b,
+    .priority b {
+      color: var(--ink);
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .bridge-list span,
+    .priority span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .region-grid {
+      display: grid;
+      grid-template-columns: .94fr 1.06fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .map-card {
+      min-height: 540px;
+      padding: 34px;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 30% 28%, rgba(14,138,131,.22), transparent 28%),
+        radial-gradient(circle at 70% 58%, rgba(215,164,70,.2), transparent 30%),
+        rgba(255,250,241,.78);
+    }
+
+    .map-rings {
+      position: relative;
+      width: min(520px, 100%);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1px solid rgba(21,34,52,.12);
+    }
+
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(21,34,52,.12);
+      background: rgba(255,250,241,.56);
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      font-weight: 820;
+    }
+
+    .r1 { inset: 6%; }
+    .r2 { inset: 22%; }
+    .r3 { inset: 38%; background: var(--teal); color: var(--white); }
+
+    .region-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .region {
+      min-height: 92px;
+      display: grid;
+      grid-template-columns: 1fr 92px 110px;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.72);
+    }
+
+    .region b {
+      color: var(--ink);
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .region span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 720;
+    }
+
+    .region strong {
+      color: var(--teal);
+      font-size: 24px;
+      text-align: right;
+    }
+
+    .portfolio {
+      display: grid;
+      grid-template-columns: .72fr 1.28fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .bubble-card {
+      min-height: 540px;
+      position: relative;
+      padding: 28px;
+    }
+
+    .bubble {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--white);
+      text-align: center;
+      font-weight: 820;
+      line-height: 1.08;
+      box-shadow: 0 26px 70px rgba(21,34,52,.16);
+    }
+
+    .bubble span {
+      display: block;
+      margin-top: 8px;
+      color: rgba(255,250,241,.72);
+      font-size: 12px;
+      font-weight: 720;
+    }
+
+    .b1 { width: 235px; height: 235px; left: 8%; top: 14%; background: var(--teal); }
+    .b2 { width: 185px; height: 185px; right: 12%; top: 10%; background: var(--amber); color: var(--ink); }
+    .b2 span { color: rgba(21,34,52,.62); }
+    .b3 { width: 165px; height: 165px; left: 34%; bottom: 10%; background: var(--navy); }
+    .b4 { width: 130px; height: 130px; right: 8%; bottom: 18%; background: var(--rose); }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      min-height: 164px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.72);
+    }
+
+    .card b {
+      display: block;
+      margin-top: 24px;
+      color: var(--ink);
+      font-size: 24px;
+      line-height: 1.06;
+    }
+
+    .card span {
+      display: block;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.34;
+    }
+
+    .ops-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .ops {
+      min-height: 360px;
+      padding: 24px;
+      border: 1px solid rgba(255,250,241,.16);
+      background: rgba(255,250,241,.08);
+      display: grid;
+      align-content: space-between;
+    }
+
+    .ops strong {
+      display: block;
+      color: var(--white);
+      font-size: 42px;
+      line-height: 1;
+    }
+
+    .ops b {
+      display: block;
+      color: rgba(255,250,241,.94);
+      font-size: 24px;
+      line-height: 1.08;
+    }
+
+    .ops span {
+      color: rgba(255,250,241,.62);
+      font-size: 14px;
+      line-height: 1.36;
+    }
+
+    .financial {
+      display: grid;
+      grid-template-columns: 1.12fr .88fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 18px;
+      color: var(--ink);
+    }
+
+    th,
+    td {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 840;
+      text-transform: uppercase;
+    }
+
+    td:last-child,
+    th:last-child { text-align: right; }
+
+    td strong {
+      color: var(--teal);
+      font-size: 21px;
+    }
+
+    .table-card { padding: 12px; min-height: 540px; }
+
+    .cash-card {
+      min-height: 540px;
+      padding: 30px;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .cash-card strong {
+      color: var(--ink);
+      font-size: 76px;
+      line-height: .9;
+    }
+
+    .cash-card p { font-size: 18px; }
+
+    .priority-grid {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .timeline {
+      min-height: 520px;
+      padding: 30px;
+      display: grid;
+      gap: 16px;
+      align-content: center;
+    }
+
+    .time-row {
+      display: grid;
+      grid-template-columns: 94px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .time-row span {
+      color: var(--teal);
+      font-weight: 840;
+    }
+
+    .line {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(21,34,52,.08);
+      overflow: hidden;
+    }
+
+    .line i {
+      display: block;
+      width: var(--w);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--teal), var(--amber));
+    }
+
+    .closing {
+      min-height: 560px;
+      padding: 32px;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .contact-row {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-top: 1px solid rgba(255,250,241,.16);
+      color: rgba(255,250,241,.9);
+      font-size: 18px;
+      font-weight: 820;
+    }
+
+    .contact-row span {
+      color: rgba(255,250,241,.58);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .55s ease, transform .55s ease;
+      transition-delay: var(--d, 0ms);
+    }
+
+    .active .reveal,
+    body.export .reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .controls {
+      position: fixed;
+      z-index: 40;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid rgba(21,34,52,.14);
+      border-radius: 999px;
+      background: rgba(255,250,241,.78);
+      box-shadow: 0 18px 54px rgba(21,34,52,.16);
+      backdrop-filter: blur(16px);
+    }
+
+    .controls button {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--white);
+      font-size: 20px;
+    }
+
+    .counter {
+      min-width: 72px;
+      text-align: center;
+      color: rgba(21,34,52,.72);
+      font-size: 13px;
+      font-weight: 820;
+    }
+
+    @media (max-width: 900px) {
+      body { overflow: auto; }
+      .deck { height: auto; min-height: 100vh; }
+      .slide {
+        position: relative;
+        display: none;
+        min-height: 100vh;
+        grid-template-columns: 1fr;
+        padding: 100px 24px 78px;
+        opacity: 1;
+        transform: none;
+      }
+      .slide.active { display: grid; }
+      .stat-grid,
+      .chart-layout,
+      .waterfall-wrap,
+      .region-grid,
+      .portfolio,
+      .ops-grid,
+      .financial,
+      .priority-grid,
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+      .region { grid-template-columns: 1fr; }
+      .bubble-card { min-height: 460px; }
+      h1 { font-size: clamp(46px, 12vw, 74px); }
+      h2 { font-size: clamp(38px, 10vw, 62px); }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-label="Asteria Group annual report presentation">
+    <section class="slide active dark" data-slide="1">
+      <div class="brand"><img src="../brand/asteria_logo_light.svg" alt="Asteria Group"></div>
+      <div class="page-no">01 / 10</div>
+      <div class="content">
+        <p class="eyebrow reveal">Annual report 2025</p>
+        <h1 class="cover-title reveal" style="--d:80ms">Рост,<br>дисциплина,<br>устойчивость</h1>
+        <p class="reveal" style="--d:160ms">Годовой отчет Asteria Group: финансовые результаты, операционная эффективность, региональная динамика и приоритеты на следующий цикл.</p>
+        <div class="chips reveal" style="--d:240ms">
+          <span class="chip">Financial results</span>
+          <span class="chip">ESG metrics</span>
+          <span class="chip">Regional performance</span>
+          <span class="chip">2026 outlook</span>
+        </div>
+      </div>
+      <div class="visual reveal" style="--d:180ms">
+        <div class="panel report-cover">
+          <div class="cover-top">Integrated report <div class="dots"><span></span><span></span><span></span></div></div>
+          <div class="cover-year">
+            <strong>2025</strong>
+            <span>48,6 млрд ₽ выручки<br>19,4% EBITDA margin<br>64% цифровых продаж</span>
+          </div>
+          <div class="mini-bars" aria-hidden="true">
+            <i style="height:38%"></i><i style="height:52%"></i><i style="height:46%"></i><i style="height:68%"></i><i style="height:73%"></i><i style="height:81%"></i><i style="height:92%"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="2">
+      <div class="brand"><img src="../brand/asteria_logo_dark.svg" alt="Asteria Group"></div>
+      <div class="page-no">02 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Key highlights</p>
+        <h2 class="reveal" style="--d:80ms">Год сильного роста без потери управляемости</h2>
+      </div>
+      <div class="stat-grid">
+        <div class="stat reveal"><small>Revenue</small><strong>48,6</strong><span>млрд ₽ выручки, +18% год к году</span></div>
+        <div class="stat reveal" style="--d:80ms"><small>EBITDA margin</small><strong>19,4%</strong><span>маржинальность выше плана на 1,6 п.п.</span></div>
+        <div class="stat reveal" style="--d:160ms"><small>Cash flow</small><strong>7,2</strong><span>млрд ₽ свободного денежного потока</span></div>
+        <div class="stat reveal" style="--d:240ms"><small>Digital</small><strong>64%</strong><span>доля цифровых продаж в общем обороте</span></div>
+        <div class="stat reveal" style="--d:320ms"><small>Customers</small><strong>2,8</strong><span>млн активных клиентов в экосистеме</span></div>
+        <div class="stat reveal" style="--d:400ms"><small>ESG</small><strong>-21%</strong><span>удельные выбросы на единицу заказа</span></div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="3">
+      <div class="brand"><img src="../brand/asteria_logo_dark.svg" alt="Asteria Group"></div>
+      <div class="page-no">03 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Revenue dynamics</p>
+        <h2 class="reveal" style="--d:80ms">Рост идет из цифровых каналов и сервисной выручки</h2>
+        <div class="mode-buttons reveal" style="--d:160ms">
+          <button type="button" class="active" data-mode="revenue">Выручка</button>
+          <button type="button" data-mode="ebitda">EBITDA</button>
+        </div>
+      </div>
+      <div class="chart-layout">
+        <div class="side-stack reveal" style="--d:220ms">
+          <div class="side-note mode-panel active" data-panel="revenue"><b>+18%</b><span>годовой рост выручки при сохранении темпа во всех трех сегментах.</span></div>
+          <div class="side-note mode-panel" data-panel="ebitda"><b>+24%</b><span>рост EBITDA за счет масштаба платформы и сокращения операционных потерь.</span></div>
+          <div class="side-note"><b>64%</b><span>продаж проходит через цифровые каналы, что снижает стоимость обслуживания.</span></div>
+          <div class="side-note"><b>3,1x</b><span>рост сервисной выручки за три года.</span></div>
+        </div>
+        <div class="panel chart-frame reveal" style="--d:260ms">
+          <div class="panel-top">Revenue by year, млрд ₽ <div class="dots"><span></span><span></span><span></span></div></div>
+          <div class="chart-bars" data-chart="revenue">
+            <div class="bar"><i style="height:42%"></i><span>2020</span></div>
+            <div class="bar"><i style="height:49%"></i><span>2021</span></div>
+            <div class="bar"><i style="height:57%"></i><span>2022</span></div>
+            <div class="bar"><i style="height:66%"></i><span>2023</span></div>
+            <div class="bar"><i style="height:78%"></i><span>2024</span></div>
+            <div class="bar"><i style="height:92%"></i><span>2025</span></div>
+          </div>
+          <p>Ключевой вклад: marketplace, подписочные сервисы и повышение частоты повторных покупок.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="4">
+      <div class="brand"><img src="../brand/asteria_logo_dark.svg" alt="Asteria Group"></div>
+      <div class="page-no">04 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Profitability bridge</p>
+        <h2 class="reveal" style="--d:80ms">Маржа выросла за счет масштаба и дисциплины затрат</h2>
+      </div>
+      <div class="waterfall-wrap">
+        <div class="panel waterfall reveal" style="--d:140ms">
+          <div><i style="height:58%"></i><span>2024<br>17,8%</span></div>
+          <div><i style="height:32%"></i><span>pricing<br>+0,9</span></div>
+          <div><i style="height:45%"></i><span>scale<br>+1,4</span></div>
+          <div class="down"><i style="height:24%"></i><span>logistics<br>-0,7</span></div>
+          <div><i style="height:66%"></i><span>2025<br>19,4%</span></div>
+        </div>
+        <div class="bridge-list">
+          <div class="reveal" style="--d:180ms"><b>Операционный рычаг</b><span>Рост объема заказов распределил фиксированные расходы на большую базу.</span></div>
+          <div class="reveal" style="--d:260ms"><b>Управление ассортиментом</b><span>Доля высокомаржинальных категорий выросла на 4,2 п.п.</span></div>
+          <div class="reveal" style="--d:340ms"><b>Логистика под контролем</b><span>Рост тарифов частично компенсирован маршрутизацией и плотностью доставки.</span></div>
+          <div class="reveal" style="--d:420ms"><b>Финальная маржа</b><span>19,4% EBITDA margin при сохранении инвестиций в цифровую платформу.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="5">
+      <div class="brand"><img src="../brand/asteria_logo_dark.svg" alt="Asteria Group"></div>
+      <div class="page-no">05 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Regional performance</p>
+        <h2 class="reveal" style="--d:80ms">Региональная сеть стала устойчивее и прибыльнее</h2>
+      </div>
+      <div class="region-grid">
+        <div class="panel map-card reveal" style="--d:160ms">
+          <div class="map-rings">
+            <div class="ring r1">8 регионов</div>
+            <div class="ring r2">42 хаба</div>
+            <div class="ring r3">2,8 млн<br>клиентов</div>
+          </div>
+        </div>
+        <div class="region-list">
+          <div class="region reveal" style="--d:200ms"><b>Центр</b><span>лидер по марже</span><strong>22,1%</strong></div>
+          <div class="region reveal" style="--d:260ms"><b>Северо-Запад</b><span>рост цифровых продаж</span><strong>+27%</strong></div>
+          <div class="region reveal" style="--d:320ms"><b>Урал</b><span>лучшая плотность доставки</span><strong>91%</strong></div>
+          <div class="region reveal" style="--d:380ms"><b>Юг</b><span>новые партнерские точки</span><strong>+18</strong></div>
+          <div class="region reveal" style="--d:440ms"><b>Сибирь</b><span>самый быстрый рост базы</span><strong>+31%</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="6">
+      <div class="brand"><img src="../brand/asteria_logo_dark.svg" alt="Asteria Group"></div>
+      <div class="page-no">06 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Portfolio mix</p>
+        <h2 class="reveal" style="--d:80ms">Портфель сбалансирован между объемом, маржей и удержанием</h2>
+      </div>
+      <div class="portfolio">
+        <div class="card-grid">
+          <div class="card reveal" style="--d:160ms"><small>Retail</small><b>31,4 млрд ₽</b><span>основа оборота и клиентской частоты.</span></div>
+          <div class="card reveal" style="--d:220ms"><small>Digital</small><b>10,8 млрд ₽</b><span>канал с лучшей экономикой обслуживания.</span></div>
+          <div class="card reveal" style="--d:280ms"><small>Logistics</small><b>4,9 млрд ₽</b><span>внутренняя платформа и B2B-сервис.</span></div>
+          <div class="card reveal" style="--d:340ms"><small>Services</small><b>1,5 млрд ₽</b><span>подписки, гарантийные продукты, аналитика.</span></div>
+        </div>
+        <div class="panel bubble-card reveal" style="--d:220ms">
+          <div class="bubble b1">Retail<span>65% revenue</span></div>
+          <div class="bubble b2">Digital<span>22% revenue</span></div>
+          <div class="bubble b3">Logistics<span>10%</span></div>
+          <div class="bubble b4">Services<span>3%</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full dark" data-slide="7">
+      <div class="brand"><img src="../brand/asteria_logo_light.svg" alt="Asteria Group"></div>
+      <div class="page-no">07 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Operations and ESG</p>
+        <h2 class="reveal" style="--d:80ms">Эффективность измеряется не только финансовым результатом</h2>
+      </div>
+      <div class="ops-grid">
+        <div class="ops reveal" style="--d:160ms"><div><strong>-21%</strong><span>выбросы CO2 на заказ</span></div><b>Экологичная доставка</b><span>Перевод городских маршрутов на электротранспорт и оптимизация загрузки.</span></div>
+        <div class="ops reveal" style="--d:240ms"><div><strong>87%</strong><span>переработка упаковки</span></div><b>Замкнутый цикл</b><span>Партнерская программа возврата коробов и вторичной упаковки.</span></div>
+        <div class="ops reveal" style="--d:320ms"><div><strong>42</strong><span>региональных хаба</span></div><b>Ближе к клиенту</b><span>Сокращение плеча доставки без роста капитальных затрат.</span></div>
+        <div class="ops reveal" style="--d:400ms"><div><strong>96%</strong><span>доступность платформы</span></div><b>Надежная цифровая основа</b><span>Мониторинг заказов, платежей и клиентских сценариев в реальном времени.</span></div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="8">
+      <div class="brand"><img src="../brand/asteria_logo_dark.svg" alt="Asteria Group"></div>
+      <div class="page-no">08 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Financial statement</p>
+        <h2 class="reveal" style="--d:80ms">Финансовая таблица читается быстро и без потери деталей</h2>
+      </div>
+      <div class="financial">
+        <div class="panel table-card reveal" style="--d:160ms">
+          <table aria-label="Financial statement">
+            <thead>
+              <tr><th>Показатель</th><th>2024</th><th>2025</th><th>YoY</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Выручка, млрд ₽</td><td>41,2</td><td>48,6</td><td><strong>+18%</strong></td></tr>
+              <tr><td>Валовая прибыль</td><td>13,9</td><td>17,6</td><td><strong>+27%</strong></td></tr>
+              <tr><td>EBITDA</td><td>7,3</td><td>9,4</td><td><strong>+29%</strong></td></tr>
+              <tr><td>CAPEX</td><td>3,8</td><td>4,1</td><td><strong>+8%</strong></td></tr>
+              <tr><td>FCF</td><td>5,4</td><td>7,2</td><td><strong>+33%</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel cash-card reveal" style="--d:220ms">
+          <div>
+            <p class="eyebrow">Cash discipline</p>
+            <strong>7,2 млрд ₽</strong>
+            <p>Свободный денежный поток вырос быстрее выручки за счет оборотного капитала и аккуратного CAPEX.</p>
+          </div>
+          <div class="mini-bars" aria-hidden="true">
+            <i style="height:42%"></i><i style="height:51%"></i><i style="height:64%"></i><i style="height:72%"></i><i style="height:88%"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="9">
+      <div class="brand"><img src="../brand/asteria_logo_dark.svg" alt="Asteria Group"></div>
+      <div class="page-no">09 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">2026 outlook</p>
+        <h2 class="reveal" style="--d:80ms">Приоритеты следующего цикла сфокусированы на качестве роста</h2>
+      </div>
+      <div class="priority-grid">
+        <div class="priority-list">
+          <div class="priority reveal" style="--d:160ms"><b>01. Рост LTV</b><span>персональные подписки, сервисы после покупки, улучшение retention.</span></div>
+          <div class="priority reveal" style="--d:220ms"><b>02. Логистика без лишнего CAPEX</b><span>увеличение плотности маршрутов и прогнозирование спроса.</span></div>
+          <div class="priority reveal" style="--d:280ms"><b>03. Данные для руководителей</b><span>единая управленческая витрина по регионам, марже и клиентской базе.</span></div>
+          <div class="priority reveal" style="--d:340ms"><b>04. Устойчивость</b><span>снижение удельных выбросов и рост доли возвратной упаковки.</span></div>
+        </div>
+        <div class="panel timeline reveal" style="--d:220ms">
+          <div class="time-row"><span>Q1</span><div class="line"><i style="--w:46%"></i></div></div>
+          <div class="time-row"><span>Q2</span><div class="line"><i style="--w:62%"></i></div></div>
+          <div class="time-row"><span>Q3</span><div class="line"><i style="--w:78%"></i></div></div>
+          <div class="time-row"><span>Q4</span><div class="line"><i style="--w:92%"></i></div></div>
+          <p>Цель 2026: рост выручки 14-16%, EBITDA margin не ниже 19% и дальнейшее снижение удельных операционных затрат.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide dark" data-slide="10">
+      <div class="brand"><img src="../brand/asteria_logo_light.svg" alt="Asteria Group"></div>
+      <div class="page-no">10 / 10</div>
+      <div class="content">
+        <p class="eyebrow reveal">Investor relations</p>
+        <h2 class="reveal" style="--d:80ms">Asteria Group продолжает расти устойчиво</h2>
+        <p class="reveal" style="--d:160ms">Отчет соединяет финансовую прозрачность, понятные управленческие выводы и визуальный язык, который помогает совету директоров быстро увидеть главное.</p>
+        <div class="chips reveal" style="--d:240ms">
+          <span class="chip">Board-ready</span>
+          <span class="chip">Data storytelling</span>
+          <span class="chip">Financial narrative</span>
+        </div>
+      </div>
+      <div class="visual reveal" style="--d:180ms">
+        <div class="panel closing">
+          <div class="cover-top">Asteria Group <div class="dots"><span></span><span></span><span></span></div></div>
+          <div class="cover-year">
+            <strong>2025</strong>
+            <span>Integrated annual report<br>Financial results and outlook</span>
+          </div>
+          <div>
+            <div class="contact-row">investors@asteria.example <span>Investor relations</span></div>
+            <div class="contact-row">asteria.example/report <span>Full report and data book</span></div>
+            <div class="contact-row">+7 999 123-45-67 <span>Corporate communications</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="controls" aria-label="Навигация по презентации">
+    <button type="button" data-dir="-1" aria-label="Предыдущий слайд">‹</button>
+    <div class="counter" aria-live="polite">1 / 10</div>
+    <button type="button" data-dir="1" aria-label="Следующий слайд">›</button>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const counter = document.querySelector(".counter");
+    const params = new URLSearchParams(window.location.search);
+    const exportMode = params.get("export") === "1";
+    let current = Math.min(Math.max(Number(params.get("slide") || 1), 1), slides.length) - 1;
+
+    if (exportMode) document.body.classList.add("export");
+
+    function show(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+      counter.textContent = `${current + 1} / ${slides.length}`;
+    }
+
+    document.querySelectorAll("[data-dir]").forEach((button) => {
+      button.addEventListener("click", () => show(current + Number(button.dataset.dir)));
+    });
+
+    document.querySelectorAll("[data-mode]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = button.dataset.mode;
+        const slide = button.closest(".slide");
+        slide.querySelectorAll("[data-mode]").forEach((item) => item.classList.toggle("active", item === button));
+        slide.querySelectorAll("[data-panel]").forEach((panel) => panel.classList.toggle("active", panel.dataset.panel === target));
+        const heights = target === "ebitda" ? [34, 40, 48, 57, 74, 91] : [42, 49, 57, 66, 78, 92];
+        slide.querySelectorAll("[data-chart] .bar i").forEach((bar, i) => { bar.style.height = `${heights[i]}%`; });
+      });
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === " ") show(current + 1);
+      if (event.key === "ArrowLeft") show(current - 1);
+    });
+
+    show(current);
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <rect width="1280" height="760" fill="#F4F4F2"/>
+  <style>
+    .word { font-family: Inter, Manrope, 'Segoe UI', Arial, sans-serif; font-weight: 650; letter-spacing: 0; }
+    .sub { font-family: Inter, Manrope, 'Segoe UI', Arial, sans-serif; font-weight: 500; letter-spacing: 3px; }
+    .label { font-family: Inter, Manrope, 'Segoe UI', Arial, sans-serif; font-weight: 650; letter-spacing: 0; }
+  </style>
+  <text x="56" y="72" class="label" font-size="22" fill="#73777F">05 / luminous tech, most futuristic</text>
+  
+  <g transform="translate(98 180)">
+    <rect x="0" y="0" width="180" height="180" rx="42" fill="#111418"/>
+    <path d="M90 34 L110 72 L152 90 L110 108 L90 146 L70 108 L28 90 L70 72 Z" fill="#F6F7F9"/>
+    <circle cx="90" cy="90" r="25" fill="#111418"/>
+    <circle cx="90" cy="90" r="13" fill="#DCE7F5"/>
+  </g>
+  <text x="330" y="286" class="word" font-size="92" fill="#111418">Lumeniq</text>
+  <text x="336" y="340" class="sub" font-size="20" fill="#626873">INTELLIGENT SYSTEMS</text>
+  <g transform="translate(98 500)">
+    <rect x="0" y="0" width="64" height="64" rx="16" fill="#111418"/>
+    <path d="M32 10 L40 25 L55 32 L40 39 L32 54 L24 39 L9 32 L24 25 Z" fill="#F6F7F9"/>
+  </g>
+  <text x="184" y="544" class="word" font-size="44" fill="#111418">Lumeniq</text>
+
+</svg>

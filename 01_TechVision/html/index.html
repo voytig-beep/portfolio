@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Noverra - коммерческое предложение</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #030406;
+      --text: #f6f7f9;
+      --muted: #b7bec8;
+      --ink: #121417;
+      --ink-muted: #525963;
+      --paper: #f4f4f2;
+      --line: rgba(255,255,255,.16);
+      --dark-card: rgba(6, 8, 12, .58);
+      --light-card: rgba(255,255,255,.72);
+      --accent: #dce7f5;
+      font-family: Inter, Manrope, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(0, .95fr) minmax(360px, 1.05fr);
+      gap: clamp(32px, 5vw, 96px);
+      align-items: center;
+      padding: clamp(36px, 6vw, 96px);
+      opacity: 0;
+      transform: translateX(28px);
+      transition: opacity .42s ease, transform .42s ease;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--photo);
+      background-size: cover;
+      background-position: center;
+      filter: saturate(.72) contrast(1.08);
+      opacity: .72;
+      transform: scale(1.02);
+    }
+
+    .slide::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.92) 0%, rgba(0,0,0,.74) 42%, rgba(0,0,0,.28) 100%),
+        radial-gradient(circle at 78% 34%, rgba(255,255,255,.12), transparent 28%);
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .slide.light {
+      color: var(--ink);
+      background: var(--paper);
+    }
+
+    .slide.light::before {
+      left: 50%;
+      opacity: .96;
+      filter: saturate(.72) contrast(1.02);
+      transform: none;
+    }
+
+    .slide.light::after {
+      background:
+        linear-gradient(90deg, rgba(244,244,242,1) 0%, rgba(244,244,242,1) 48%, rgba(244,244,242,.74) 62%, rgba(244,244,242,.02) 100%);
+    }
+
+    .slide.photo-left {
+      grid-template-columns: minmax(360px, 1.02fr) minmax(0, .98fr);
+    }
+
+    .slide.photo-left::before {
+      right: 50%;
+      left: 0;
+    }
+
+    .slide.photo-left::after {
+      background:
+        linear-gradient(90deg, rgba(244,244,242,.02) 0%, rgba(244,244,242,.74) 38%, rgba(244,244,242,1) 54%, rgba(244,244,242,1) 100%);
+    }
+
+    .content, .side {
+      position: relative;
+      z-index: 1;
+    }
+
+    .content.right {
+      grid-column: 2;
+    }
+
+    .brand {
+      position: absolute;
+      z-index: 2;
+      top: clamp(24px, 4vw, 48px);
+      left: clamp(24px, 6vw, 86px);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #f4f4f2;
+      opacity: .96;
+    }
+
+    .brand img {
+      display: block;
+      width: 40px;
+      height: 40px;
+    }
+
+    .brand .mark-light {
+      display: none;
+    }
+
+    .brand-name {
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 720;
+      letter-spacing: 0;
+    }
+
+    .brand-sub {
+      margin-top: 4px;
+      font-size: 9px;
+      line-height: 1;
+      letter-spacing: 3px;
+      opacity: .72;
+    }
+
+    .slide.light .brand {
+      color: #111418;
+    }
+
+    .slide.light .brand .mark-dark {
+      display: none;
+    }
+
+    .slide.light .brand .mark-light {
+      display: block;
+    }
+
+    .cover .brand {
+      top: clamp(28px, 5vw, 58px);
+      gap: 14px;
+    }
+
+    .cover .brand img {
+      width: 52px;
+      height: 52px;
+    }
+
+    .cover .brand-name {
+      font-size: 24px;
+    }
+
+    .cover .content {
+      grid-column: 1 / -1;
+      max-width: min(820px, 60vw);
+      transform: translateY(58px);
+    }
+
+    .cover .eyebrow {
+      display: none;
+    }
+
+    .cover h1 {
+      font-size: clamp(50px, 6vw, 90px);
+      max-width: 900px;
+    }
+
+    .eyebrow {
+      margin-bottom: 26px;
+      color: var(--accent);
+      font-size: clamp(13px, 1.1vw, 17px);
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .light .eyebrow {
+      color: #6a7079;
+    }
+
+    h1, h2 {
+      margin: 0;
+      max-width: 980px;
+      line-height: .98;
+      letter-spacing: 0;
+      font-weight: 680;
+    }
+
+    h1 { font-size: clamp(52px, 6.4vw, 98px); }
+    h2 { font-size: clamp(42px, 5.1vw, 78px); }
+
+    .lead {
+      max-width: 760px;
+      margin: 28px 0 0;
+      color: var(--muted);
+      font-size: clamp(21px, 2vw, 31px);
+      line-height: 1.28;
+    }
+
+    .light .lead {
+      color: var(--ink-muted);
+    }
+
+    .stack, .cards, .steps, .cases, .packages, .metrics {
+      display: grid;
+      gap: 16px;
+      width: min(680px, 100%);
+    }
+
+    .metrics {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-self: end;
+      margin-top: 48px;
+    }
+
+    .metric, .card, .step, .case, .package {
+      min-height: 94px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--dark-card);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.18);
+    }
+
+    .light .metric, .light .card, .light .step, .light .case, .light .package {
+      border-color: rgba(10,14,20,.1);
+      background: var(--light-card);
+      box-shadow: 0 24px 60px rgba(16,20,28,.12);
+    }
+
+    .metric strong {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--text);
+      font-size: clamp(42px, 4.2vw, 68px);
+      line-height: .9;
+      font-weight: 680;
+    }
+
+    .light .metric strong { color: var(--ink); }
+
+    .card strong, .step strong, .case strong, .package strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: clamp(20px, 1.6vw, 26px);
+      font-weight: 650;
+    }
+
+    .light .card strong, .light .step strong, .light .case strong, .light .package strong {
+      color: var(--ink);
+    }
+
+    .metric span, .card span, .step span, .case span, .package span {
+      color: var(--muted);
+      font-size: clamp(15px, 1.25vw, 20px);
+      line-height: 1.35;
+    }
+
+    .light .metric span, .light .card span, .light .step span, .light .case span, .light .package span {
+      color: var(--ink-muted);
+    }
+
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .num {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      margin-right: 10px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      color: inherit;
+      font-size: 14px;
+    }
+
+    .device-shot {
+      position: relative;
+      z-index: 1;
+      width: min(620px, 100%);
+      aspect-ratio: 16 / 10;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 22px;
+      background-image: var(--photo);
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 34px 90px rgba(0,0,0,.42);
+    }
+
+    .light .device-shot {
+      border-color: rgba(10,14,20,.08);
+      box-shadow: 0 30px 70px rgba(10,14,20,.16);
+    }
+
+    .controls {
+      position: fixed;
+      left: 24px;
+      right: 24px;
+      bottom: 22px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #d6d9de;
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    #counter, .nav {
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 999px;
+      background: rgba(0,0,0,.42);
+      backdrop-filter: blur(18px);
+      pointer-events: auto;
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      color: #fff;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    button:hover { background: rgba(255,255,255,.12); }
+
+    body.export .controls {
+      display: none;
+    }
+
+    body.export .slide {
+      transition: none;
+    }
+
+    @media (max-width: 900px) {
+      body { overflow: auto; }
+      .deck { min-height: 100vh; height: auto; }
+      .slide, .slide.photo-left {
+        position: relative;
+        min-height: 100vh;
+        display: none;
+        grid-template-columns: 1fr;
+        padding: 48px 22px 96px;
+      }
+      .slide.active { display: grid; }
+      .slide.light::before, .slide.photo-left::before {
+        inset: 42% 0 0 0;
+      }
+      .slide.light::after, .slide.photo-left::after {
+        background: linear-gradient(180deg, rgba(244,244,242,1) 0%, rgba(244,244,242,.95) 44%, rgba(244,244,242,.18) 100%);
+      }
+      .brand {
+        top: 22px;
+        left: 22px;
+      }
+      .brand-name {
+        font-size: 17px;
+      }
+      .content.right, .cover .content {
+        grid-column: auto;
+        max-width: none;
+        transform: translateY(34px);
+      }
+      .metrics, .steps { grid-template-columns: 1fr; }
+      .device-shot { min-height: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-live="polite">
+    <section class="slide cover active" style="--photo:url('../assets/dark-workspace.jpg')">
+      <div class="content">
+        <div class="eyebrow">01 / NOVERRA</div>
+        <h1>Цифровые решения для бизнеса</h1>
+        <p class="lead">Коммерческое предложение для компаний, которым нужен понятный путь от идеи до работающего продукта.</p>
+      </div>
+      <div class="side"></div>
+    </section>
+
+    <section class="slide light" style="--photo:url('../assets/office-glass.jpg')">
+      <div class="content">
+        <div class="eyebrow">02 / О КОМПАНИИ</div>
+        <h2>Запускаем цифровые продукты быстрее</h2>
+        <p class="lead">Noverra проектирует, разрабатывает и внедряет веб-сервисы, корпоративные платформы и аналитические инструменты.</p>
+        <div class="metrics">
+          <div class="metric"><strong>7</strong><span>лет на рынке</span></div>
+          <div class="metric"><strong>80+</strong><span>реализованных проектов</span></div>
+          <div class="metric"><strong>12</strong><span>отраслей</span></div>
+        </div>
+      </div>
+      <div class="side"></div>
+    </section>
+
+    <section class="slide" style="--photo:url('../assets/data-screen.jpg')">
+      <div class="content">
+        <div class="eyebrow">03 / ПРОБЛЕМА</div>
+        <h2>Технологии не должны тормозить рост</h2>
+        <p class="lead">Мы помогаем убрать узкие места, которые замедляют продажи, операции и клиентский опыт.</p>
+      </div>
+      <div class="stack side">
+        <div class="card"><strong>Ручные процессы</strong><span>Команда тратит время на повторяющиеся операции.</span></div>
+        <div class="card"><strong>Разрозненные данные</strong><span>Информация живёт в разных системах и не помогает принимать решения.</span></div>
+        <div class="card"><strong>Сложный клиентский путь</strong><span>Пользователи уходят там, где продукт должен продавать.</span></div>
+      </div>
+    </section>
+
+    <section class="slide light photo-left" style="--photo:url('../assets/product-screen.jpg')">
+      <div class="side"></div>
+      <div class="content right">
+        <div class="eyebrow">04 / РЕШЕНИЕ</div>
+        <h2>Собираем систему вокруг бизнес-целей</h2>
+        <p class="lead">Соединяем стратегию, UX, разработку и аналитику в один управляемый процесс.</p>
+        <div class="cards">
+          <div class="card"><strong>Структура</strong><span>Продуктовая логика до визуала и разработки.</span></div>
+          <div class="card"><strong>Интерфейс</strong><span>Дизайн, который помогает пользователю двигаться дальше.</span></div>
+          <div class="card"><strong>Запуск</strong><span>Рабочая система, готовая к развитию.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" style="--photo:url('../assets/cover-laptop.jpg')">
+      <div class="content">
+        <div class="eyebrow">05 / УСЛУГИ</div>
+        <h2>Что мы можем сделать</h2>
+        <p class="lead">От первого MVP до корпоративной платформы с интеграциями и аналитикой.</p>
+      </div>
+      <div class="cards side">
+        <div class="card"><strong>Корпоративные порталы</strong><span>Сайты, платформы и личные кабинеты.</span></div>
+        <div class="card"><strong>CRM и внутренние системы</strong><span>Инструменты для продаж, операций и поддержки.</span></div>
+        <div class="card"><strong>Дашборды и аналитика</strong><span>Понятные данные для управленческих решений.</span></div>
+        <div class="card"><strong>MVP и интеграции</strong><span>Быстрый запуск новых продуктов и связка сервисов.</span></div>
+      </div>
+    </section>
+
+    <section class="slide" style="--photo:url('../assets/premium-device.jpg')">
+      <div class="content">
+        <div class="eyebrow">06 / ПРЕИМУЩЕСТВА</div>
+        <h2>Не просто разработка. Управляемый результат.</h2>
+        <p class="lead">Мы делаем процесс прозрачным, а продукт готовым к росту после запуска.</p>
+      </div>
+      <div class="stack side">
+        <div class="card"><strong>Прозрачные этапы</strong><span>Понятные сроки, контрольные точки и ответственность.</span></div>
+        <div class="card"><strong>Продуктовая экспертиза</strong><span>Смотрим не только на код, но и на бизнес-результат.</span></div>
+        <div class="card"><strong>Сильный дизайн</strong><span>Интерфейс помогает продавать и удерживать клиентов.</span></div>
+      </div>
+    </section>
+
+    <section class="slide" style="--photo:url('../assets/architecture.jpg')">
+      <div class="content">
+        <div class="eyebrow">07 / КЕЙСЫ</div>
+        <h2>Дизайн и технологии работают на бизнес</h2>
+        <p class="lead">Каждый проект связываем с измеримым эффектом для клиента.</p>
+      </div>
+      <div class="cases side">
+        <div class="case"><strong>B2B-портал</strong><span>Минус 35% ручных операций для дистрибьютора.</span></div>
+        <div class="case"><strong>Личный кабинет</strong><span>Плюс 22% к повторным оплатам для сервиса подписки.</span></div>
+        <div class="case"><strong>Аналитический дашборд</strong><span>Отчёты за минуты вместо часов.</span></div>
+      </div>
+    </section>
+
+    <section class="slide" style="--photo:url('../assets/dark-workspace.jpg')">
+      <div class="content">
+        <div class="eyebrow">08 / ПРОЦЕСС</div>
+        <h2>Понятный путь от первой встречи до запуска</h2>
+        <p class="lead">У проекта есть логика, поэтому клиент видит движение и результат.</p>
+      </div>
+      <div class="steps side">
+        <div class="step"><strong><span class="num">1</span>Диагностика</strong><span>Формулируем задачу и критерии успеха.</span></div>
+        <div class="step"><strong><span class="num">2</span>Концепция</strong><span>Определяем структуру и ключевые сценарии.</span></div>
+        <div class="step"><strong><span class="num">3</span>Дизайн</strong><span>Создаём UX/UI-прототип.</span></div>
+        <div class="step"><strong><span class="num">4</span>Запуск</strong><span>Разрабатываем, тестируем и поддерживаем.</span></div>
+      </div>
+    </section>
+
+    <section class="slide light photo-left" style="--photo:url('../assets/team-work.jpg')">
+      <div class="side"></div>
+      <div class="content right">
+        <div class="eyebrow">09 / ФОРМАТЫ</div>
+        <h2>Выберите формат под вашу задачу</h2>
+        <p class="lead">Можно начать с концепции, MVP или сразу с развития существующего продукта.</p>
+        <div class="packages">
+          <div class="package"><strong>Start</strong><span>Аудит, концепция продукта и дорожная карта.</span></div>
+          <div class="package"><strong>Build</strong><span>Дизайн и разработка MVP для быстрого запуска.</span></div>
+          <div class="package"><strong>Scale</strong><span>Развитие, интеграции, аналитика и поддержка.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" style="--photo:url('../assets/architecture.jpg')">
+      <div class="content">
+        <div class="eyebrow">10 / КОНТАКТЫ</div>
+        <h2>Готовы обсудить ваш цифровой продукт?</h2>
+        <p class="lead">Расскажите о задаче, и мы предложим оптимальный план запуска.</p>
+      </div>
+      <div class="stack side">
+        <div class="card"><strong>hello@noverra.studio</strong><span>Почта для запроса коммерческого предложения.</span></div>
+        <div class="card"><strong>noverra.studio</strong><span>Сайт компании и примеры проектов.</span></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="controls">
+    <div id="counter">1 / 10</div>
+    <div class="nav">
+      <button type="button" id="prev" aria-label="Предыдущий слайд">‹</button>
+      <button type="button" id="next" aria-label="Следующий слайд">›</button>
+    </div>
+  </div>
+
+  <script>
+    if (new URLSearchParams(window.location.search).has("export")) {
+      document.body.classList.add("export");
+    }
+
+    const brand = `
+      <div class="brand" aria-label="Noverra Digital Systems">
+        <img class="mark-dark" src="../brand/selected/noverra_mark_inverse.svg" alt="">
+        <img class="mark-light" src="../brand/selected/noverra_mark.svg" alt="">
+        <div>
+          <div class="brand-name">Noverra</div>
+          <div class="brand-sub">DIGITAL SYSTEMS</div>
+        </div>
+      </div>
+    `;
+    document.querySelectorAll(".slide").forEach((slide) => {
+      slide.insertAdjacentHTML("afterbegin", brand);
+    });
+
+    const slides = [...document.querySelectorAll(".slide")];
+    const counter = document.querySelector("#counter");
+    let index = 0;
+
+    function show(nextIndex) {
+      index = (nextIndex + slides.length) % slides.length;
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+      counter.textContent = `${index + 1} / ${slides.length}`;
+    }
+
+    document.querySelector("#prev").addEventListener("click", () => show(index - 1));
+    document.querySelector("#next").addEventListener("click", () => show(index + 1));
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === " ") show(index + 1);
+      if (event.key === "ArrowLeft") show(index - 1);
+    });
+  </script>
+</body>
+</html>

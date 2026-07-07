@@ -1,0 +1,7 @@
+<svg width="286" height="64" viewBox="0 0 286 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="18" fill="#F6F1E8"/>
+  <path d="M18 44L32 17L46 44" stroke="#BDA36D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24 36H41" stroke="#1E3E3A" stroke-width="5" stroke-linecap="round"/>
+  <text x="80" y="29" fill="#16201F" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="760">Liora Residence</text>
+  <text x="82" y="47" fill="#63706D" font-family="Segoe UI, Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="2.8">PRIVATE ESTATE</text>
+</svg>

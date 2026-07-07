@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <rect width="1280" height="760" fill="#F4F4F2"/>
+  <style>
+    .word { font-family: Inter, Manrope, 'Segoe UI', Arial, sans-serif; font-weight: 650; letter-spacing: 0; }
+    .sub { font-family: Inter, Manrope, 'Segoe UI', Arial, sans-serif; font-weight: 500; letter-spacing: 3px; }
+    .label { font-family: Inter, Manrope, 'Segoe UI', Arial, sans-serif; font-weight: 650; letter-spacing: 0; }
+  </style>
+  <text x="56" y="72" class="label" font-size="22" fill="#73777F">04 / process and growth, best for consulting</text>
+  
+  <g transform="translate(98 180)">
+    <rect x="0" y="0" width="180" height="180" rx="38" fill="#111418"/>
+    <path d="M44 128 C56 62 100 40 138 54" fill="none" stroke="#F6F7F9" stroke-width="15" stroke-linecap="round"/>
+    <path d="M48 126 H138" fill="none" stroke="#DCE7F5" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="138" cy="54" r="10" fill="#DCE7F5"/>
+  </g>
+  <text x="330" y="286" class="word" font-size="92" fill="#111418">Arcline</text>
+  <text x="336" y="340" class="sub" font-size="20" fill="#626873">DIGITAL PARTNERS</text>
+  <g transform="translate(98 500)">
+    <rect x="0" y="0" width="64" height="64" rx="14" fill="#111418"/>
+    <path d="M16 46 C22 22 39 16 50 20" fill="none" stroke="#F6F7F9" stroke-width="6" stroke-linecap="round"/>
+    <path d="M17 46 H50" fill="none" stroke="#DCE7F5" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <text x="184" y="544" class="word" font-size="44" fill="#111418">Arcline</text>
+
+</svg>

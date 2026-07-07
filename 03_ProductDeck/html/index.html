@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SignalDesk - incident command deck</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #fbf6ed;
+      --paper-2: #f4eadc;
+      --ink: #17130f;
+      --muted: #786e64;
+      --line: rgba(23, 19, 15, .14);
+      --soft: rgba(255, 255, 255, .66);
+      --coral: #df725f;
+      --coral-dark: #b64d3d;
+      --sage: #8ca18e;
+      --blue: #8db3c7;
+      font-family: Inter, Manrope, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: #000;
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(520px, 1.1fr);
+      gap: clamp(42px, 5vw, 94px);
+      align-items: center;
+      padding: clamp(54px, 5.4vw, 94px);
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+      transform: translateX(22px);
+      transition: opacity .35s ease, transform .35s ease;
+      background: linear-gradient(112deg, var(--paper) 0%, #fffaf3 52%, #efe3d4 100%);
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: .68;
+      background:
+        linear-gradient(rgba(23,19,15,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23,19,15,.06) 1px, transparent 1px);
+      background-size: 62px 62px;
+      mask-image: linear-gradient(90deg, #000 0%, rgba(0,0,0,.78) 50%, transparent 100%);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    body.export .slide {
+      transition: none;
+    }
+
+    .photo {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: .74;
+      background-position: center;
+      background-size: cover;
+      transform: scale(1.04);
+      filter: saturate(.96) contrast(1.02);
+      transition: transform .7s ease;
+    }
+
+    .photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(251,246,237,.9) 0%, rgba(251,246,237,.68) 42%, rgba(251,246,237,.16) 100%),
+        linear-gradient(180deg, rgba(251,246,237,.02), rgba(251,246,237,.42));
+    }
+
+    .slide.active[data-tilt="1"] .photo {
+      transform: scale(1.06) translate3d(var(--mx, 0), var(--my, 0), 0);
+    }
+
+    .photo.command { background-image: url("../assets/bg-command-workspace.png"); }
+    .photo.playbook { background-image: url("../assets/bg-playbook-desk.png"); }
+    .photo.integrations { background-image: url("../assets/bg-integrations-office.png"); }
+    .photo.executive { background-image: url("../assets/bg-executive-room.png"); }
+
+    .brand {
+      position: absolute;
+      z-index: 5;
+      top: clamp(24px, 3vw, 44px);
+      left: clamp(32px, 5.4vw, 94px);
+    }
+
+    .brand img {
+      display: block;
+      width: clamp(176px, 13vw, 244px);
+      height: auto;
+    }
+
+    .content,
+    .visual,
+    .wide {
+      position: relative;
+      z-index: 2;
+      min-width: 0;
+    }
+
+    .content {
+      max-width: 850px;
+      padding-top: 28px;
+    }
+
+    .eyebrow {
+      margin: 0 0 20px;
+      color: var(--coral-dark);
+      font-size: clamp(13px, 1vw, 17px);
+      line-height: 1.25;
+      font-weight: 820;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      max-width: 900px;
+      color: var(--ink);
+      font-weight: 820;
+      letter-spacing: 0;
+      line-height: .95;
+      overflow-wrap: anywhere;
+    }
+
+    h1 { font-size: clamp(58px, 7.2vw, 122px); }
+    h2 { font-size: clamp(46px, 5.6vw, 88px); }
+
+    p {
+      margin: 22px 0 0;
+      max-width: 730px;
+      color: var(--muted);
+      font-size: clamp(18px, 1.35vw, 25px);
+      line-height: 1.38;
+      overflow-wrap: anywhere;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    .chip {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 13px;
+      border: 1px solid rgba(23,19,15,.14);
+      border-radius: 999px;
+      background: rgba(255,255,255,.54);
+      color: rgba(23,19,15,.74);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .panel {
+      border: 1px solid rgba(23,19,15,.14);
+      background: rgba(255,255,255,.76);
+      box-shadow: 0 30px 90px rgba(87, 61, 42, .16);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .workspace {
+      min-height: 585px;
+      display: grid;
+      grid-template-rows: 58px 1fr;
+    }
+
+    .panel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 58px;
+      padding: 0 22px;
+      border-bottom: 1px solid rgba(23,19,15,.12);
+      color: rgba(23,19,15,.78);
+      font-size: 14px;
+      font-weight: 820;
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(23,19,15,.28);
+    }
+
+    .workspace-body {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .ticket {
+      min-height: 68px;
+      border: 1px solid rgba(23,19,15,.12);
+      background: rgba(255,255,255,.66);
+      display: grid;
+      grid-template-columns: 1fr 145px;
+      align-items: center;
+      gap: 18px;
+      padding: 0 18px;
+      transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
+    }
+
+    .ticket:hover {
+      transform: translateY(-3px);
+      border-color: rgba(223,114,95,.38);
+      box-shadow: 0 18px 36px rgba(87, 61, 42, .12);
+    }
+
+    .ticket b {
+      display: block;
+      color: rgba(23,19,15,.88);
+      font-size: 17px;
+      line-height: 1.15;
+    }
+
+    .ticket span {
+      display: block;
+      margin-top: 6px;
+      color: rgba(23,19,15,.52);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .status {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(23,19,15,.08);
+      overflow: hidden;
+    }
+
+    .status i {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--coral), #e7a36b);
+      transition: width .9s ease .2s;
+    }
+
+    .active .status i,
+    body.export .status i {
+      width: var(--w);
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      min-height: 112px;
+      padding: 18px;
+      border: 1px solid rgba(23,19,15,.12);
+      background: rgba(255,255,255,.64);
+      display: grid;
+      align-content: space-between;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--ink);
+      font-size: clamp(30px, 3vw, 48px);
+      line-height: 1;
+      font-weight: 820;
+    }
+
+    .metric span {
+      display: block;
+      color: rgba(23,19,15,.55);
+      font-size: 13px;
+      line-height: 1.28;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      min-height: 188px;
+      padding: 22px;
+      border: 1px solid rgba(23,19,15,.12);
+      background: rgba(255,255,255,.66);
+      box-shadow: 0 20px 50px rgba(87, 61, 42, .1);
+      transition: transform .24s ease, border-color .24s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(223,114,95,.38);
+    }
+
+    .card small {
+      display: block;
+      color: var(--coral-dark);
+      font-size: 12px;
+      font-weight: 820;
+      text-transform: uppercase;
+    }
+
+    .card b {
+      display: block;
+      margin-top: 28px;
+      color: var(--ink);
+      font-size: 25px;
+      line-height: 1.05;
+    }
+
+    .card span {
+      display: block;
+      margin-top: 14px;
+      color: rgba(23,19,15,.58);
+      font-size: 14px;
+      line-height: 1.36;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .step {
+      min-height: 260px;
+      padding: 22px;
+      border: 1px solid rgba(23,19,15,.12);
+      background: rgba(255,255,255,.7);
+      position: relative;
+    }
+
+    .step::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -14px;
+      width: 14px;
+      height: 1px;
+      background: rgba(223,114,95,.5);
+    }
+
+    .step:last-child::after { display: none; }
+
+    .step small {
+      color: var(--coral-dark);
+      font-size: 12px;
+      font-weight: 820;
+    }
+
+    .step b {
+      display: block;
+      margin-top: 26px;
+      color: var(--ink);
+      font-size: 25px;
+      line-height: 1.05;
+    }
+
+    .step span {
+      display: block;
+      margin-top: 14px;
+      color: rgba(23,19,15,.58);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .slide.full {
+      grid-template-columns: 1fr;
+      align-items: stretch;
+      gap: 28px;
+    }
+
+    .wide {
+      padding-top: 40px;
+    }
+
+    .wide h2 {
+      max-width: 1080px;
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: .92fr 1.08fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .scenario-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .scenario-buttons button {
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid rgba(23,19,15,.15);
+      border-radius: 999px;
+      background: rgba(255,255,255,.58);
+      color: rgba(23,19,15,.72);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 780;
+      cursor: pointer;
+      transition: background .2s ease, color .2s ease, border-color .2s ease;
+    }
+
+    .scenario-buttons button.active {
+      background: var(--ink);
+      color: #fffaf3;
+      border-color: var(--ink);
+    }
+
+    .scenario {
+      display: none;
+    }
+
+    .scenario.active,
+    body.export .scenario:first-child {
+      display: block;
+    }
+
+    body.export .scenario:not(:first-child) {
+      display: none;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 12px;
+    }
+
+    .timeline-row {
+      min-height: 66px;
+      display: grid;
+      grid-template-columns: 88px 1fr 92px;
+      gap: 16px;
+      align-items: center;
+      padding: 0 16px;
+      border: 1px solid rgba(23,19,15,.12);
+      background: rgba(255,255,255,.64);
+      color: rgba(23,19,15,.7);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .timeline-line {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(23,19,15,.08);
+      overflow: hidden;
+    }
+
+    .timeline-line i {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: var(--coral);
+      border-radius: inherit;
+      transition: width .8s ease .25s;
+    }
+
+    .active .timeline-line i,
+    body.export .timeline-line i {
+      width: var(--w);
+    }
+
+    .integration-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .integration {
+      min-height: 92px;
+      padding: 18px;
+      border: 1px solid rgba(23,19,15,.12);
+      background: rgba(255,255,255,.68);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: rgba(23,19,15,.86);
+      font-weight: 820;
+    }
+
+    .integration em {
+      font-style: normal;
+      color: var(--coral-dark);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .chart {
+      min-height: 510px;
+      padding: 26px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 30px;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 18px;
+      align-items: end;
+      height: 330px;
+      padding: 0 10px;
+      border-bottom: 1px solid rgba(23,19,15,.14);
+    }
+
+    .col {
+      display: grid;
+      gap: 9px;
+      align-items: end;
+      height: 100%;
+      color: rgba(23,19,15,.55);
+      font-size: 12px;
+      text-align: center;
+      font-weight: 720;
+    }
+
+    .col i {
+      display: block;
+      min-height: 20px;
+      border-radius: 8px 8px 0 0;
+      background: linear-gradient(180deg, var(--coral), rgba(223,114,95,.22));
+    }
+
+    .col.after i {
+      background: linear-gradient(180deg, var(--sage), rgba(140,161,142,.22));
+    }
+
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .week {
+      min-height: 335px;
+      padding: 24px;
+      border: 1px solid rgba(23,19,15,.12);
+      background: rgba(255,255,255,.68);
+      box-shadow: 0 20px 54px rgba(87, 61, 42, .1);
+    }
+
+    .week small {
+      color: var(--coral-dark);
+      font-size: 12px;
+      font-weight: 820;
+      text-transform: uppercase;
+    }
+
+    .week b {
+      display: block;
+      margin-top: 24px;
+      color: var(--ink);
+      font-size: 27px;
+      line-height: 1.06;
+    }
+
+    .week ul {
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 11px;
+      color: rgba(23,19,15,.58);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .week li::before {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-right: 9px;
+      border-radius: 50%;
+      background: var(--coral);
+      vertical-align: 1px;
+    }
+
+    .cta {
+      padding: 34px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .cta-row {
+      min-height: 72px;
+      padding: 16px 18px;
+      border: 1px solid rgba(23,19,15,.12);
+      background: rgba(255,255,255,.58);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: rgba(23,19,15,.86);
+      font-weight: 820;
+    }
+
+    .cta-row span {
+      color: rgba(23,19,15,.52);
+      font-size: 13px;
+      font-weight: 680;
+      text-align: right;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .55s ease, transform .55s ease;
+      transition-delay: var(--d, 0ms);
+    }
+
+    .active .reveal,
+    body.export .reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    body.export .controls {
+      display: none;
+    }
+
+    .controls {
+      position: fixed;
+      z-index: 30;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid rgba(23,19,15,.12);
+      border-radius: 999px;
+      background: rgba(251,246,237,.78);
+      box-shadow: 0 18px 50px rgba(87,61,42,.18);
+      backdrop-filter: blur(16px);
+    }
+
+    .controls button {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--ink);
+      color: #fffaf3;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .counter {
+      min-width: 70px;
+      text-align: center;
+      color: rgba(23,19,15,.72);
+      font-size: 13px;
+      font-weight: 820;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .deck {
+        height: auto;
+        min-height: 100vh;
+      }
+
+      .slide {
+        position: relative;
+        display: none;
+        min-height: 100vh;
+        grid-template-columns: 1fr;
+        padding: 96px 24px 76px;
+        opacity: 1;
+        transform: none;
+      }
+
+      .slide.active {
+        display: grid;
+      }
+
+      .split-grid,
+      .cards,
+      .flow,
+      .metric-row,
+      .integration-grid,
+      .roadmap {
+        grid-template-columns: 1fr;
+      }
+
+      .workspace {
+        min-height: 520px;
+      }
+
+      .ticket,
+      .timeline-row {
+        grid-template-columns: 1fr;
+        padding: 14px;
+      }
+
+      .controls {
+        bottom: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-label="SignalDesk incident command presentation">
+    <section class="slide active" data-slide="1" data-tilt="1">
+      <div class="photo command"></div>
+      <div class="brand"><img src="../brand/signaldesk_logo_light.svg" alt="SignalDesk"></div>
+      <div class="content">
+        <p class="eyebrow reveal">01 / Incident command</p>
+        <h1 class="reveal" style="--d:80ms">Риски под контролем</h1>
+        <p class="reveal" style="--d:160ms">SignalDesk превращает разрозненные сигналы в понятный playbook: владелец, срок, действие и результат в одном рабочем окне.</p>
+        <div class="chips reveal" style="--d:240ms">
+          <span class="chip">Incident workspace</span>
+          <span class="chip">Playbooks</span>
+          <span class="chip">SLA</span>
+          <span class="chip">Operations</span>
+        </div>
+      </div>
+      <div class="visual reveal" style="--d:180ms">
+        <div class="panel workspace">
+          <div class="panel-top">Incident workspace <div class="dots"><span></span><span></span><span></span></div></div>
+          <div class="workspace-body">
+            <div class="ticket"><div><b>New signal detected</b><span>VIP onboarding delay</span></div><div class="status"><i style="--w:34%"></i></div></div>
+            <div class="ticket"><div><b>Owner assigned</b><span>CX operations lead</span></div><div class="status"><i style="--w:54%"></i></div></div>
+            <div class="ticket"><div><b>Customer updated</b><span>Account owner notified</span></div><div class="status"><i style="--w:72%"></i></div></div>
+            <div class="ticket"><div><b>Root cause captured</b><span>Saved to weekly review</span></div><div class="status"><i style="--w:88%"></i></div></div>
+            <div class="metric-row">
+              <div class="metric"><strong>-28%</strong><span>time to action</span></div>
+              <div class="metric"><strong>7</strong><span>playbooks live</span></div>
+              <div class="metric"><strong>30d</strong><span>rollout</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide="2" data-tilt="1">
+      <div class="photo command"></div>
+      <div class="brand"><img src="../brand/signaldesk_logo_light.svg" alt="SignalDesk"></div>
+      <div class="content">
+        <p class="eyebrow reveal">02 / Problem</p>
+        <h2 class="reveal" style="--d:80ms">Сигналы теряются между системами</h2>
+        <p class="reveal" style="--d:160ms">Команда видит задачи в CRM, helpdesk, чатах и таблицах. Но риск становится очевидным только тогда, когда SLA уже почти сорван.</p>
+        <div class="metric-row reveal" style="--d:240ms">
+          <div class="metric"><strong>11</strong><span>источников между сигналом и решением</span></div>
+          <div class="metric"><strong>2,4ч</strong><span>поиск владельца и контекста</span></div>
+          <div class="metric"><strong>37%</strong><span>эскалаций из-за невидимого SLA</span></div>
+        </div>
+      </div>
+      <div class="visual">
+        <div class="cards">
+          <div class="card reveal"><small>01</small><b>Контекст в разных местах</b><span>Команда собирает факты вручную перед каждым решением.</span></div>
+          <div class="card reveal" style="--d:80ms"><small>02</small><b>Нет явного владельца</b><span>Ответственный появляется поздно, когда клиент уже ждет.</span></div>
+          <div class="card reveal" style="--d:160ms"><small>03</small><b>SLA виден постфактум</b><span>Риск обнаруживается в отчете, а не в момент действия.</span></div>
+          <div class="card reveal" style="--d:240ms"><small>04</small><b>Статусы собираются руками</b><span>Операционные встречи уходят в пересказ вместо решения причин.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide="3" data-tilt="1">
+      <div class="photo playbook"></div>
+      <div class="brand"><img src="../brand/signaldesk_logo_light.svg" alt="SignalDesk"></div>
+      <div class="content">
+        <p class="eyebrow reveal">03 / Solution</p>
+        <h2 class="reveal" style="--d:80ms">Playbook превращает риск в действие</h2>
+        <p class="reveal" style="--d:160ms">Каждый сигнал проходит один понятный маршрут: распознать, назначить владельца, уведомить клиента, зафиксировать результат.</p>
+      </div>
+      <div class="visual reveal" style="--d:160ms">
+        <div class="flow">
+          <div class="step"><small>Step 01</small><b>Сигнал</b><span>Событие из CRM, helpdesk, BI или чата попадает в единую очередь.</span></div>
+          <div class="step"><small>Step 02</small><b>Контекст</b><span>SignalDesk добавляет клиента, сумму, SLA, историю и похожие кейсы.</span></div>
+          <div class="step"><small>Step 03</small><b>Владелец</b><span>Правило назначает ответственного и следующий шаг.</span></div>
+          <div class="step"><small>Step 04</small><b>Итог</b><span>Решение сохраняется для weekly review и улучшения процесса.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="4" data-tilt="1">
+      <div class="photo playbook"></div>
+      <div class="brand"><img src="../brand/signaldesk_logo_light.svg" alt="SignalDesk"></div>
+      <div class="wide">
+        <p class="eyebrow reveal">04 / Interactive workspace</p>
+        <h2 class="reveal" style="--d:80ms">Переключайте сценарий риска</h2>
+        <div class="scenario-buttons reveal" style="--d:160ms">
+          <button type="button" class="active" data-scenario="sla">SLA risk</button>
+          <button type="button" data-scenario="vip">VIP customer</button>
+          <button type="button" data-scenario="handoff">Handoff</button>
+        </div>
+      </div>
+      <div class="split-grid">
+        <div class="panel cta reveal" style="--d:200ms">
+          <div class="scenario active" data-panel="sla">
+            <div class="cta-row">Payment SLA warning <span>4 часа до риска</span></div>
+            <div class="cta-row">Owner: Finance Ops <span>назначен автоматически</span></div>
+            <div class="cta-row">Next action <span>сверить оплату и отправить update</span></div>
+          </div>
+          <div class="scenario" data-panel="vip">
+            <div class="cta-row">VIP ticket aging <span>клиент ждет 18 часов</span></div>
+            <div class="cta-row">Owner: CX Lead <span>эскалация в канал</span></div>
+            <div class="cta-row">Next action <span>созвон и компенсационный сценарий</span></div>
+          </div>
+          <div class="scenario" data-panel="handoff">
+            <div class="cta-row">Delivery handoff gap <span>нет статуса 2 дня</span></div>
+            <div class="cta-row">Owner: Project Ops <span>проверка зависимостей</span></div>
+            <div class="cta-row">Next action <span>закрыть блокер до 15:00</span></div>
+          </div>
+        </div>
+        <div class="panel workspace reveal" style="--d:260ms">
+          <div class="panel-top">Live playbook <div class="dots"><span></span><span></span><span></span></div></div>
+          <div class="workspace-body">
+            <div class="ticket"><div><b>Detect risk</b><span>Trigger from connected systems</span></div><div class="status"><i style="--w:78%"></i></div></div>
+            <div class="ticket"><div><b>Assign owner</b><span>Role-based routing</span></div><div class="status"><i style="--w:64%"></i></div></div>
+            <div class="ticket"><div><b>Notify stakeholder</b><span>Customer and manager update</span></div><div class="status"><i style="--w:86%"></i></div></div>
+            <div class="ticket"><div><b>Close loop</b><span>Saved to operations review</span></div><div class="status"><i style="--w:58%"></i></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide="5" data-tilt="1">
+      <div class="photo playbook"></div>
+      <div class="brand"><img src="../brand/signaldesk_logo_light.svg" alt="SignalDesk"></div>
+      <div class="content">
+        <p class="eyebrow reveal">05 / Playbooks</p>
+        <h2 class="reveal" style="--d:80ms">Готовые сценарии вместо ручных статусов</h2>
+        <p class="reveal" style="--d:160ms">Playbook задает порядок действий и снимает с команды вопрос: что делать дальше и кого подключать.</p>
+      </div>
+      <div class="visual">
+        <div class="timeline">
+          <div class="timeline-row reveal"><span>09:10</span><div class="timeline-line"><i style="--w:38%"></i></div><span>detected</span></div>
+          <div class="timeline-row reveal" style="--d:80ms"><span>09:24</span><div class="timeline-line"><i style="--w:54%"></i></div><span>assigned</span></div>
+          <div class="timeline-row reveal" style="--d:160ms"><span>10:15</span><div class="timeline-line"><i style="--w:76%"></i></div><span>updated</span></div>
+          <div class="timeline-row reveal" style="--d:240ms"><span>11:40</span><div class="timeline-line"><i style="--w:92%"></i></div><span>resolved</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide="6" data-tilt="1">
+      <div class="photo playbook"></div>
+      <div class="brand"><img src="../brand/signaldesk_logo_light.svg" alt="SignalDesk"></div>
+      <div class="content">
+        <p class="eyebrow reveal">06 / Use cases</p>
+        <h2 class="reveal" style="--d:80ms">Четыре сценария для операционной команды</h2>
+        <p class="reveal" style="--d:160ms">Продукт не заменяет рабочие системы. Он собирает слой принятия решений поверх них.</p>
+      </div>
+      <div class="visual">
+        <div class="cards">
+          <div class="card reveal"><small>Incident</small><b>Инциденты</b><span>Быстрый маршрут от сигнала до владельца и результата.</span></div>
+          <div class="card reveal" style="--d:80ms"><small>CX</small><b>Поддержка клиентов</b><span>Раннее обнаружение VIP-рисков и стареющих обращений.</span></div>
+          <div class="card reveal" style="--d:160ms"><small>Onboarding</small><b>Внедрение</b><span>Контроль шагов, дедлайнов и межкомандных передач.</span></div>
+          <div class="card reveal" style="--d:240ms"><small>Review</small><b>Операционные ритуалы</b><span>Weekly review на фактах, а не на ручном сборе статусов.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide="7" data-tilt="1">
+      <div class="photo integrations"></div>
+      <div class="brand"><img src="../brand/signaldesk_logo_light.svg" alt="SignalDesk"></div>
+      <div class="content">
+        <p class="eyebrow reveal">07 / Integrations</p>
+        <h2 class="reveal" style="--d:80ms">Подключается к стеку, который уже есть</h2>
+        <p class="reveal" style="--d:160ms">SignalDesk читает события из текущих систем и возвращает действия туда, где работает команда.</p>
+        <div class="metric-row reveal" style="--d:240ms">
+          <div class="metric"><strong>API</strong><span>события и webhooks</span></div>
+          <div class="metric"><strong>SSO</strong><span>роли и доступ</span></div>
+          <div class="metric"><strong>Audit</strong><span>история решений</span></div>
+        </div>
+      </div>
+      <div class="visual reveal" style="--d:220ms">
+        <div class="integration-grid">
+          <div class="integration">CRM <em>sync</em></div>
+          <div class="integration">Helpdesk <em>tickets</em></div>
+          <div class="integration">BI <em>metrics</em></div>
+          <div class="integration">Slack <em>alerts</em></div>
+          <div class="integration">Billing <em>risk</em></div>
+          <div class="integration">Data warehouse <em>read</em></div>
+          <div class="integration">Email <em>intake</em></div>
+          <div class="integration">SSO <em>roles</em></div>
+          <div class="integration">Webhooks <em>actions</em></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide="8" data-tilt="1">
+      <div class="photo command"></div>
+      <div class="brand"><img src="../brand/signaldesk_logo_light.svg" alt="SignalDesk"></div>
+      <div class="content">
+        <p class="eyebrow reveal">08 / Business impact</p>
+        <h2 class="reveal" style="--d:80ms">Меньше ручного контроля, быстрее реакция</h2>
+        <p class="reveal" style="--d:160ms">Презентация показывает продукт через бизнес-эффект: скорость, прозрачность SLA и меньше ручного менеджмента.</p>
+        <div class="metric-row reveal" style="--d:240ms">
+          <div class="metric"><strong>-28%</strong><span>time to action</span></div>
+          <div class="metric"><strong>+21%</strong><span>видимость рисков</span></div>
+          <div class="metric"><strong>4,6ч</strong><span>экономия статусов в неделю</span></div>
+        </div>
+      </div>
+      <div class="visual reveal" style="--d:180ms">
+        <div class="panel chart">
+          <div class="panel-top">Before / after <div class="dots"><span></span><span></span><span></span></div></div>
+          <div class="chart-grid">
+            <div class="col"><i style="height:86%"></i><span>Mon</span></div>
+            <div class="col"><i style="height:74%"></i><span>Tue</span></div>
+            <div class="col"><i style="height:66%"></i><span>Wed</span></div>
+            <div class="col after"><i style="height:48%"></i><span>Thu</span></div>
+            <div class="col after"><i style="height:36%"></i><span>Fri</span></div>
+            <div class="col after"><i style="height:29%"></i><span>Next</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="9" data-tilt="1">
+      <div class="photo executive"></div>
+      <div class="brand"><img src="../brand/signaldesk_logo_light.svg" alt="SignalDesk"></div>
+      <div class="wide">
+        <p class="eyebrow reveal">09 / Rollout</p>
+        <h2 class="reveal" style="--d:80ms">Внедрение за 30 дней</h2>
+      </div>
+      <div class="roadmap">
+        <div class="week reveal"><small>Week 01</small><b>Диагностика</b><ul><li>карта источников</li><li>ключевые SLA</li><li>роли владельцев</li></ul></div>
+        <div class="week reveal" style="--d:80ms"><small>Week 02</small><b>Пилот</b><ul><li>2-3 системы</li><li>очередь рисков</li><li>первые playbooks</li></ul></div>
+        <div class="week reveal" style="--d:160ms"><small>Week 03</small><b>Процессы</b><ul><li>маршрутизация</li><li>эскалации</li><li>операционные ритуалы</li></ul></div>
+        <div class="week reveal" style="--d:240ms"><small>Week 04</small><b>Запуск</b><ul><li>обучение команды</li><li>дашборд руководителя</li><li>план улучшений</li></ul></div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide="10" data-tilt="1">
+      <div class="photo executive"></div>
+      <div class="brand"><img src="../brand/signaldesk_logo_light.svg" alt="SignalDesk"></div>
+      <div class="content">
+        <p class="eyebrow reveal">10 / Next step</p>
+        <h2 class="reveal" style="--d:80ms">Запустите операционный ритм без хаоса</h2>
+        <p class="reveal" style="--d:160ms">SignalDesk помогает командам видеть важное, быстро назначать действие и обсуждать процессы на языке фактов.</p>
+        <div class="chips reveal" style="--d:240ms">
+          <span class="chip">Product demo</span>
+          <span class="chip">Pilot setup</span>
+          <span class="chip">Operations review</span>
+        </div>
+      </div>
+      <div class="visual reveal" style="--d:180ms">
+        <div class="panel cta">
+          <div class="cta-row">Discovery call <span>30 минут, карта рисков</span></div>
+          <div class="cta-row">Pilot workspace <span>2 команды, 3 источника</span></div>
+          <div class="cta-row">Executive dashboard <span>SLA, владельцы, weekly review</span></div>
+          <div class="cta-row">hello@signaldesk.example <span>signaldesk.example</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="controls" aria-label="Навигация по презентации">
+    <button type="button" data-dir="-1" aria-label="Предыдущий слайд">‹</button>
+    <div class="counter" aria-live="polite">1 / 10</div>
+    <button type="button" data-dir="1" aria-label="Следующий слайд">›</button>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const counter = document.querySelector(".counter");
+    const params = new URLSearchParams(window.location.search);
+    const exportMode = params.get("export") === "1";
+    let current = Math.min(Math.max(Number(params.get("slide") || 1), 1), slides.length) - 1;
+
+    if (exportMode) document.body.classList.add("export");
+
+    function show(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+      counter.textContent = `${current + 1} / ${slides.length}`;
+    }
+
+    document.querySelectorAll("[data-dir]").forEach((button) => {
+      button.addEventListener("click", () => show(current + Number(button.dataset.dir)));
+    });
+
+    document.querySelectorAll("[data-scenario]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = button.dataset.scenario;
+        const slide = button.closest(".slide");
+        slide.querySelectorAll("[data-scenario]").forEach((item) => item.classList.toggle("active", item === button));
+        slide.querySelectorAll("[data-panel]").forEach((panel) => panel.classList.toggle("active", panel.dataset.panel === target));
+      });
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === " ") show(current + 1);
+      if (event.key === "ArrowLeft") show(current - 1);
+    });
+
+    if (!exportMode) {
+      window.addEventListener("pointermove", (event) => {
+        const x = ((event.clientX / window.innerWidth) - .5) * 14;
+        const y = ((event.clientY / window.innerHeight) - .5) * 10;
+        document.documentElement.style.setProperty("--mx", `${x}px`);
+        document.documentElement.style.setProperty("--my", `${y}px`);
+      });
+    }
+
+    show(current);
+  </script>
+</body>
+</html>

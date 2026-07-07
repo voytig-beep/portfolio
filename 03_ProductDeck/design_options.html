@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SignalDesk - варианты дизайна</title>
+  <style>
+    :root {
+      --page: #e9eceb;
+      --ink: #111417;
+      --muted: #667078;
+      --line: rgba(17, 20, 23, .14);
+      font-family: Inter, Manrope, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--page);
+      color: var(--ink);
+    }
+
+    .page {
+      width: min(1460px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 44px 0 64px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+      gap: 32px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 900px;
+      font-size: clamp(42px, 6vw, 92px);
+      line-height: .94;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.45;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .option {
+      background: #fff;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .slide {
+      aspect-ratio: 16 / 9;
+      position: relative;
+      overflow: hidden;
+      padding: 34px;
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(300px, 1.1fr);
+      gap: 24px;
+      align-items: center;
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .copy,
+    .mock {
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+    }
+
+    .mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .mark i {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      display: inline-block;
+      position: relative;
+      background: currentColor;
+    }
+
+    .mark i::before {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 9px;
+      width: 14px;
+      height: 9px;
+      border: 3px solid;
+      border-color: transparent currentColor currentColor transparent;
+      transform: rotate(45deg);
+      filter: invert(1);
+    }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(28px, 3vw, 48px);
+      line-height: .98;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    p {
+      margin: 18px 0 0;
+      max-width: 520px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .mock {
+      border: 1px solid;
+      min-height: 270px;
+      box-shadow: 0 26px 70px rgba(0,0,0,.22);
+      display: grid;
+      grid-template-rows: 44px 1fr;
+    }
+
+    .mock-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: .38;
+    }
+
+    .mock-body {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .row {
+      min-height: 42px;
+      border: 1px solid;
+      display: grid;
+      grid-template-columns: 1fr 90px;
+      align-items: center;
+      gap: 14px;
+      padding: 0 13px;
+      font-size: 12px;
+      font-weight: 720;
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 999px;
+      background: currentColor;
+      opacity: .82;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .metric {
+      min-height: 80px;
+      border: 1px solid;
+      padding: 13px;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .metric b {
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .metric span {
+      font-size: 10px;
+      color: inherit;
+      opacity: .62;
+    }
+
+    .meta {
+      padding: 22px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: start;
+      border-top: 1px solid var(--line);
+    }
+
+    .meta h3 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.12;
+    }
+
+    .meta p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 720px;
+    }
+
+    .badge {
+      min-width: 96px;
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .linear {
+      background: #07080a;
+      color: #f5f5f2;
+    }
+
+    .linear::before {
+      background:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    .linear p { color: rgba(245,245,242,.68); }
+    .linear .eyebrow { color: #86b7ff; }
+    .linear .mock { background: #111317; border-color: rgba(255,255,255,.12); }
+    .linear .mock-top, .linear .row, .linear .metric { border-color: rgba(255,255,255,.12); }
+    .linear .row, .linear .metric { background: rgba(255,255,255,.045); }
+    .linear .bar { color: #86b7ff; }
+
+    .incident {
+      background: #fbf7ef;
+      color: #17130f;
+    }
+
+    .incident::before {
+      background:
+        linear-gradient(rgba(95,68,44,.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(95,68,44,.07) 1px, transparent 1px);
+      background-size: 52px 52px;
+    }
+
+    .incident .eyebrow { color: #d95f45; }
+    .incident p { color: rgba(23,19,15,.66); }
+    .incident .mock { background: #fffdfa; border-color: rgba(23,19,15,.14); box-shadow: 0 26px 70px rgba(80,55,34,.12); }
+    .incident .mock-top, .incident .row, .incident .metric { border-color: rgba(23,19,15,.12); }
+    .incident .row, .incident .metric { background: #fff; }
+    .incident .bar { color: #d95f45; }
+
+    .enterprise {
+      background: #eef4f5;
+      color: #07151b;
+    }
+
+    .enterprise::before {
+      background:
+        linear-gradient(rgba(7,21,27,.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(7,21,27,.055) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    .enterprise .eyebrow { color: #087d8f; }
+    .enterprise p { color: rgba(7,21,27,.62); }
+    .enterprise .mock { background: #ffffff; border-color: rgba(7,21,27,.14); box-shadow: 0 26px 70px rgba(7,21,27,.14); }
+    .enterprise .mock-top, .enterprise .row, .enterprise .metric { border-color: rgba(7,21,27,.12); }
+    .enterprise .row, .enterprise .metric { background: #f9fbfb; }
+    .enterprise .bar { color: #087d8f; }
+
+    .editorial {
+      background: #080706;
+      color: #f6f1e7;
+    }
+
+    .editorial::before {
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.1), rgba(0,0,0,.45)),
+        linear-gradient(rgba(246,241,231,.035) 1px, transparent 1px);
+      background-size: auto, 100% 54px;
+    }
+
+    .editorial .eyebrow { color: #e5c981; }
+    .editorial p { color: rgba(246,241,231,.68); }
+    .editorial .mock { background: #151310; border-color: rgba(246,241,231,.14); }
+    .editorial .mock-top, .editorial .row, .editorial .metric { border-color: rgba(246,241,231,.13); }
+    .editorial .row, .editorial .metric { background: rgba(246,241,231,.055); }
+    .editorial .bar { color: #e5c981; }
+
+    @media (max-width: 980px) {
+      header,
+      .options,
+      .slide,
+      .meta {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        padding: 30px;
+      }
+
+      .mock {
+        min-height: 260px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>4 направления для SignalDesk</h1>
+      <p class="lead">Черновые визуальные направления на базе референсов из сегмента B2B SaaS, incident management и internal tools. Это не копии, а быстрый выбор настроения будущей презентации.</p>
+    </header>
+
+    <section class="options" aria-label="Варианты дизайна">
+      <article class="option">
+        <div class="slide linear">
+          <div class="copy">
+            <div class="mark"><i></i>SignalDesk</div>
+            <p class="eyebrow">A / Linear-like product OS</p>
+            <h2>Центр операций</h2>
+            <p>Темный интерфейс, строгая сетка, сухой текст, много реального UI. Самый технологичный и взрослый вариант.</p>
+          </div>
+          <div class="mock">
+            <div class="mock-top">Command queue <div class="dots"><span></span><span></span><span></span></div></div>
+            <div class="mock-body">
+              <div class="metrics"><div class="metric"><b>94%</b><span>owned signals</span></div><div class="metric"><b>12</b><span>SLA risks</span></div><div class="metric"><b>4.2h</b><span>response</span></div></div>
+              <div class="row">VIP onboarding delay <div class="bar" style="width: 84%"></div></div>
+              <div class="row">Payment SLA warning <div class="bar" style="width: 56%"></div></div>
+              <div class="row">Support backlog spike <div class="bar" style="width: 72%"></div></div>
+              <div class="row">Delivery handoff risk <div class="bar" style="width: 42%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="meta">
+          <div><h3>Вариант A: строгий product OS</h3><p>Больше всего похож на дорогой инструмент для CTO/COO. Хорош для портфолио, где надо показать вкус, интерфейсы и премиальность.</p></div>
+          <span class="badge">рекомендую</span>
+        </div>
+      </article>
+
+      <article class="option">
+        <div class="slide incident">
+          <div class="copy">
+            <div class="mark"><i></i>SignalDesk</div>
+            <p class="eyebrow">B / Incident command</p>
+            <h2>Риски под контролем</h2>
+            <p>Светлая основа, теплый акцент, карточки инцидентов, таймлайны, playbook-логика. Менее холодный, более понятный клиенту.</p>
+          </div>
+          <div class="mock">
+            <div class="mock-top">Incident workspace <div class="dots"><span></span><span></span><span></span></div></div>
+            <div class="mock-body">
+              <div class="row">New signal detected <div class="bar" style="width: 38%"></div></div>
+              <div class="row">Owner assigned <div class="bar" style="width: 58%"></div></div>
+              <div class="row">Customer updated <div class="bar" style="width: 74%"></div></div>
+              <div class="row">Root cause captured <div class="bar" style="width: 90%"></div></div>
+              <div class="metrics"><div class="metric"><b>-28%</b><span>time to action</span></div><div class="metric"><b>7</b><span>playbooks</span></div><div class="metric"><b>30d</b><span>rollout</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="meta">
+          <div><h3>Вариант B: incident/playbook</h3><p>Сильный вариант, если хотим, чтобы продукт считывался как управление проблемами и SLA, а не просто dashboard.</p></div>
+          <span class="badge">понятный</span>
+        </div>
+      </article>
+
+      <article class="option">
+        <div class="slide enterprise">
+          <div class="copy">
+            <div class="mark"><i></i>SignalDesk</div>
+            <p class="eyebrow">C / Enterprise control room</p>
+            <h2>Контроль операций</h2>
+            <p>Светлый enterprise-стиль: таблицы, фильтры, интеграции, роли, безопасность. Чище для корпоративного заказчика.</p>
+          </div>
+          <div class="mock">
+            <div class="mock-top">Operations control <div class="dots"><span></span><span></span><span></span></div></div>
+            <div class="mock-body">
+              <div class="metrics"><div class="metric"><b>SSO</b><span>roles</span></div><div class="metric"><b>API</b><span>sync</span></div><div class="metric"><b>Audit</b><span>log</span></div></div>
+              <div class="row">CRM / account risk <div class="bar" style="width: 64%"></div></div>
+              <div class="row">Helpdesk / ticket age <div class="bar" style="width: 74%"></div></div>
+              <div class="row">BI / KPI drift <div class="bar" style="width: 44%"></div></div>
+              <div class="row">Slack / escalation <div class="bar" style="width: 88%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="meta">
+          <div><h3>Вариант C: enterprise dashboard</h3><p>Самый безопасный для B2B. Выглядит дороже текущего, но менее эмоционально, больше про доверие и масштаб.</p></div>
+          <span class="badge">B2B</span>
+        </div>
+      </article>
+
+      <article class="option">
+        <div class="slide editorial">
+          <div class="copy">
+            <div class="mark"><i></i>SignalDesk</div>
+            <p class="eyebrow">D / Premium product story</p>
+            <h2>Управляемый ритм</h2>
+            <p>Больше презентационного драматизма: крупная типографика, меньше мелкого UI, больше истории «до/после».</p>
+          </div>
+          <div class="mock">
+            <div class="mock-top">Before / after map <div class="dots"><span></span><span></span><span></span></div></div>
+            <div class="mock-body">
+              <div class="row">Signals scattered <div class="bar" style="width: 92%"></div></div>
+              <div class="row">Context merged <div class="bar" style="width: 68%"></div></div>
+              <div class="row">Owner visible <div class="bar" style="width: 74%"></div></div>
+              <div class="row">Weekly rhythm <div class="bar" style="width: 86%"></div></div>
+              <div class="metrics"><div class="metric"><b>01</b><span>story</span></div><div class="metric"><b>10</b><span>slides</span></div><div class="metric"><b>UI</b><span>selective</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="meta">
+          <div><h3>Вариант D: премиальный сторителлинг</h3><p>Подойдет, если хочется ближе к первому кейсу Noverra: меньше таблиц, больше дорогой подачи и сильных первых экранов.</p></div>
+          <span class="badge">эффектный</span>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

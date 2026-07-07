@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FlowPilot - investment pitch deck</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070807;
+      --ink: #111411;
+      --paper: #f4f4ee;
+      --text: #f4f4ee;
+      --muted: #aab2aa;
+      --soft: rgba(244, 244, 238, .08);
+      --line: rgba(244, 244, 238, .16);
+      --green: #31d6a0;
+      --blue: #7eb7ff;
+      --coral: #ff6b55;
+      --yellow: #f3c969;
+      font-family: Inter, Manrope, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #000;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(420px, 1.08fr);
+      gap: clamp(34px, 5vw, 96px);
+      align-items: center;
+      padding: clamp(42px, 5.5vw, 90px);
+      opacity: 0;
+      transform: translateX(26px);
+      pointer-events: none;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(7,8,7,1) 0%, rgba(7,8,7,.96) 46%, rgba(13,18,15,.92) 100%);
+      transition: opacity .35s ease, transform .35s ease;
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .5;
+      background:
+        linear-gradient(rgba(244,244,238,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244,244,238,.035) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: linear-gradient(90deg, #000 0%, transparent 82%);
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .slide.light {
+      color: var(--ink);
+      background: var(--paper);
+    }
+
+    .slide.light::before {
+      opacity: .55;
+      background:
+        linear-gradient(rgba(17,20,17,.052) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17,20,17,.052) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: linear-gradient(90deg, transparent 0%, #000 24%, #000 100%);
+    }
+
+    .brand {
+      position: absolute;
+      z-index: 4;
+      top: clamp(24px, 3vw, 44px);
+      left: clamp(30px, 5.5vw, 86px);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .brand img {
+      width: 182px;
+      height: auto;
+    }
+
+    .brand .logo-light {
+      display: none;
+    }
+
+    .light .brand .logo-dark {
+      display: none;
+    }
+
+    .light .brand .logo-light {
+      display: block;
+    }
+
+    .content,
+    .visual {
+      position: relative;
+      z-index: 2;
+    }
+
+    .content {
+      max-width: 860px;
+    }
+
+    .eyebrow {
+      margin: 0 0 22px;
+      color: var(--green);
+      font-size: clamp(14px, 1.15vw, 18px);
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .light .eyebrow {
+      color: #168360;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      max-width: 940px;
+      line-height: .96;
+      letter-spacing: 0;
+      font-weight: 760;
+    }
+
+    h1 { font-size: clamp(62px, 7vw, 118px); }
+    h2 { font-size: clamp(48px, 5.4vw, 86px); }
+
+    p {
+      margin: 22px 0 0;
+      max-width: 720px;
+      color: rgba(244,244,238,.72);
+      font-size: clamp(18px, 1.45vw, 25px);
+      line-height: 1.38;
+    }
+
+    .light p {
+      color: rgba(17,20,17,.68);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(244,244,238,.05);
+      color: rgba(244,244,238,.76);
+      font-size: 13px;
+      font-weight: 680;
+    }
+
+    .light .chip {
+      border-color: rgba(17,20,17,.14);
+      background: rgba(17,20,17,.045);
+      color: rgba(17,20,17,.72);
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 42px;
+      border: 1px solid var(--line);
+      background: var(--line);
+      max-width: 780px;
+    }
+
+    .metric {
+      min-height: 118px;
+      padding: 24px;
+      background: rgba(7,8,7,.78);
+    }
+
+    .light .metric {
+      background: rgba(255,255,255,.54);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--text);
+      font-size: clamp(30px, 3vw, 48px);
+      line-height: 1;
+      font-weight: 760;
+    }
+
+    .light .metric strong {
+      color: var(--ink);
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .light .metric span {
+      color: rgba(17,20,17,.58);
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(244,244,238,.06);
+      box-shadow: 0 24px 80px rgba(0,0,0,.32);
+      overflow: hidden;
+    }
+
+    .light .panel {
+      border-color: rgba(17,20,17,.12);
+      background: rgba(255,255,255,.72);
+      box-shadow: 0 24px 80px rgba(17,20,17,.12);
+    }
+
+    .terminal {
+      padding: 22px;
+      min-height: 520px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 24px;
+    }
+
+    .terminal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(244,244,238,.62);
+      font-size: 13px;
+      font-weight: 680;
+    }
+
+    .cash-chart {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      align-items: end;
+      gap: 12px;
+      min-height: 330px;
+      padding: 22px;
+      border: 1px solid rgba(244,244,238,.08);
+      background: linear-gradient(180deg, rgba(49,214,160,.08), rgba(244,244,238,.03));
+    }
+
+    .bar {
+      min-height: 28px;
+      border-radius: 7px 7px 0 0;
+      background: linear-gradient(180deg, var(--green), #168360);
+    }
+
+    .bar.warn {
+      background: linear-gradient(180deg, var(--coral), #8d2c24);
+    }
+
+    .stat-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .stat-card {
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: rgba(244,244,238,.06);
+    }
+
+    .light .stat-card {
+      border-color: rgba(17,20,17,.12);
+      background: rgba(255,255,255,.6);
+    }
+
+    .stat-card b {
+      display: block;
+      color: var(--green);
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .stat-card small {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .light .stat-card small {
+      color: rgba(17,20,17,.58);
+    }
+
+    .problem-grid,
+    .market-grid,
+    .pricing-grid,
+    .roadmap {
+      display: grid;
+      gap: 16px;
+    }
+
+    .problem-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .problem-card {
+      min-height: 196px;
+      padding: 24px;
+      border: 1px solid rgba(17,20,17,.12);
+      background: rgba(255,255,255,.6);
+    }
+
+    .problem-card b {
+      color: var(--coral);
+      font-size: 42px;
+      line-height: 1;
+    }
+
+    .problem-card h3,
+    .pricing-card h3 {
+      margin: 18px 0 0;
+      font-size: 24px;
+      line-height: 1.08;
+    }
+
+    .problem-card p,
+    .pricing-card p {
+      margin-top: 12px;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .flow {
+      display: grid;
+      gap: 12px;
+      padding: 26px;
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: 148px 1fr 120px;
+      gap: 14px;
+      align-items: center;
+      padding: 16px;
+      border: 1px solid rgba(244,244,238,.12);
+      background: rgba(244,244,238,.05);
+    }
+
+    .flow-row strong {
+      color: var(--green);
+      font-size: 16px;
+    }
+
+    .flow-row span {
+      color: rgba(244,244,238,.76);
+      font-size: 15px;
+    }
+
+    .pill {
+      justify-self: end;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(49,214,160,.12);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .market-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .market-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 130px;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 18px;
+      border: 1px solid rgba(17,20,17,.12);
+      background: rgba(255,255,255,.62);
+    }
+
+    .market-bar {
+      height: 24px;
+      border-radius: 999px;
+      background: rgba(17,20,17,.08);
+      overflow: hidden;
+    }
+
+    .market-bar i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #168360, var(--green));
+    }
+
+    .dashboard {
+      padding: 22px;
+      min-height: 560px;
+    }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 14px;
+      height: 100%;
+    }
+
+    .dash-card {
+      padding: 18px;
+      border: 1px solid rgba(244,244,238,.1);
+      background: rgba(7,8,7,.52);
+    }
+
+    .dash-card h3 {
+      margin: 0;
+      color: rgba(244,244,238,.72);
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .dash-card strong {
+      display: block;
+      margin-top: 16px;
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .line-chart {
+      position: relative;
+      height: 170px;
+      margin-top: 24px;
+      border-left: 1px solid rgba(244,244,238,.16);
+      border-bottom: 1px solid rgba(244,244,238,.16);
+    }
+
+    .line-chart::before,
+    .line-chart::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, transparent 0 28%, rgba(49,214,160,.9) 28% 30%, transparent 30% 100%),
+        linear-gradient(155deg, transparent 0 52%, rgba(126,183,255,.72) 52% 54%, transparent 54% 100%);
+    }
+
+    .alerts {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .alert {
+      padding: 12px 14px;
+      border: 1px solid rgba(244,244,238,.1);
+      color: rgba(244,244,238,.76);
+      font-size: 14px;
+    }
+
+    .alert b {
+      color: var(--green);
+    }
+
+    .pricing-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .pricing-card {
+      min-height: 360px;
+      padding: 26px;
+      border: 1px solid rgba(17,20,17,.12);
+      background: rgba(255,255,255,.62);
+    }
+
+    .pricing-card strong {
+      display: block;
+      margin-top: 24px;
+      font-size: 48px;
+      line-height: 1;
+    }
+
+    .pricing-card small {
+      display: block;
+      margin-top: 10px;
+      color: rgba(17,20,17,.55);
+    }
+
+    .traction {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .traction .stat-card {
+      min-height: 160px;
+    }
+
+    .roadmap {
+      grid-template-columns: 1fr;
+    }
+
+    .road {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      background: rgba(244,244,238,.06);
+    }
+
+    .road b {
+      color: var(--green);
+      font-size: 18px;
+    }
+
+    .road span {
+      color: rgba(244,244,238,.76);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .use-funds {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .funds-circle {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        conic-gradient(var(--green) 0 42%, var(--blue) 42% 70%, var(--yellow) 70% 88%, var(--coral) 88% 100%);
+      border: 14px solid rgba(255,255,255,.7);
+    }
+
+    .fund-list {
+      display: grid;
+      gap: 12px;
+      align-content: center;
+    }
+
+    .fund-list div {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(17,20,17,.12);
+      color: rgba(17,20,17,.72);
+      font-size: 17px;
+    }
+
+    .closing {
+      grid-template-columns: 1fr;
+      place-items: center;
+      text-align: center;
+    }
+
+    .closing .content {
+      max-width: 1080px;
+    }
+
+    .closing h2 {
+      max-width: 1080px;
+      margin: 0 auto;
+      font-size: clamp(56px, 6.8vw, 110px);
+    }
+
+    .controls {
+      position: fixed;
+      z-index: 20;
+      left: 50%;
+      bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid rgba(244,244,238,.16);
+      border-radius: 999px;
+      background: rgba(7,8,7,.64);
+      backdrop-filter: blur(18px);
+      transform: translateX(-50%);
+    }
+
+    button {
+      min-width: 44px;
+      height: 40px;
+      border: 1px solid rgba(244,244,238,.16);
+      border-radius: 999px;
+      background: rgba(244,244,238,.08);
+      color: var(--text);
+      font: inherit;
+      font-weight: 760;
+      cursor: pointer;
+    }
+
+    .counter {
+      min-width: 64px;
+      text-align: center;
+      color: rgba(244,244,238,.72);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    body.export .controls {
+      display: none;
+    }
+
+    body.export .slide {
+      transition: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-label="FlowPilot pitch deck">
+    <section class="slide active">
+      <div class="brand"><img class="logo-dark" src="../brand/flowpilot_logo_dark.svg" alt="FlowPilot"><img class="logo-light" src="../brand/flowpilot_logo_light.svg" alt="FlowPilot"></div>
+      <div class="content">
+        <p class="eyebrow">Seed pitch deck / B2B fintech SaaS</p>
+        <h1>AI finance copilot для малого бизнеса</h1>
+        <p>FlowPilot прогнозирует cash flow, предупреждает о кассовых разрывах и помогает основателям принимать финансовые решения до того, как деньги заканчиваются.</p>
+        <div class="chips">
+          <span class="chip">AI forecasting</span>
+          <span class="chip">SMB finance</span>
+          <span class="chip">Seed $1.2M</span>
+        </div>
+      </div>
+      <div class="visual panel terminal">
+        <div class="terminal-top"><span>90-day cash forecast</span><span>live model</span></div>
+        <div class="cash-chart">
+          <i class="bar" style="height:42%"></i>
+          <i class="bar" style="height:58%"></i>
+          <i class="bar" style="height:72%"></i>
+          <i class="bar warn" style="height:34%"></i>
+          <i class="bar" style="height:52%"></i>
+          <i class="bar" style="height:68%"></i>
+          <i class="bar" style="height:82%"></i>
+          <i class="bar" style="height:76%"></i>
+          <i class="bar" style="height:92%"></i>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light">
+      <div class="brand"><img class="logo-dark" src="../brand/flowpilot_logo_dark.svg" alt="FlowPilot"><img class="logo-light" src="../brand/flowpilot_logo_light.svg" alt="FlowPilot"></div>
+      <div class="content">
+        <p class="eyebrow">Problem</p>
+        <h2>SMB-финансы все еще управляются вручную</h2>
+        <p>Основатели видят деньги постфактум: таблицы устаревают, банк не объясняет риск, а бухгалтерия не дает управленческий прогноз.</p>
+      </div>
+      <div class="visual problem-grid">
+        <div class="problem-card"><b>63%</b><h3>нет прогноза</h3><p>компании смотрят только на текущий баланс, не на будущий cash gap.</p></div>
+        <div class="problem-card"><b>14ч</b><h3>ручной работы</h3><p>каждую неделю уходит на сверку таблиц, оплат и счетов.</p></div>
+        <div class="problem-card"><b>41%</b><h3>ошибок в планах</h3><p>расходы и поступления обновляются не в одном месте.</p></div>
+        <div class="problem-card"><b>28д</b><h3>поздняя реакция</h3><p>кассовые разрывы обнаруживаются слишком близко к проблеме.</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><img class="logo-dark" src="../brand/flowpilot_logo_dark.svg" alt="FlowPilot"><img class="logo-light" src="../brand/flowpilot_logo_light.svg" alt="FlowPilot"></div>
+      <div class="content">
+        <p class="eyebrow">Solution</p>
+        <h2>Единая финансовая картина и прогноз на 90 дней</h2>
+        <p>FlowPilot подключается к банкам, CRM, счетам и платежам, собирает поток данных и превращает его в прогноз, сценарии и конкретные рекомендации.</p>
+        <div class="metric-row">
+          <div class="metric"><strong>90д</strong><span>горизонт прогноза</span></div>
+          <div class="metric"><strong>12</strong><span>типов интеграций</span></div>
+          <div class="metric"><strong>AI</strong><span>сценарии и alerts</span></div>
+        </div>
+      </div>
+      <div class="visual panel flow">
+        <div class="flow-row"><strong>Banking</strong><span>transactions, balances, loans</span><i class="pill">sync</i></div>
+        <div class="flow-row"><strong>CRM</strong><span>pipeline, expected revenue</span><i class="pill">forecast</i></div>
+        <div class="flow-row"><strong>Invoices</strong><span>payables, receivables</span><i class="pill">risk</i></div>
+        <div class="flow-row"><strong>Payroll</strong><span>fixed and variable costs</span><i class="pill">plan</i></div>
+        <div class="flow-row"><strong>FlowPilot</strong><span>cash flow model and recommendations</span><i class="pill">AI</i></div>
+      </div>
+    </section>
+
+    <section class="slide light">
+      <div class="brand"><img class="logo-dark" src="../brand/flowpilot_logo_dark.svg" alt="FlowPilot"><img class="logo-light" src="../brand/flowpilot_logo_light.svg" alt="FlowPilot"></div>
+      <div class="content">
+        <p class="eyebrow">Market</p>
+        <h2>Большой рынок на стыке SMB, fintech и automation</h2>
+        <p>Фокус первого этапа - Европа и MENA: компании 10-250 сотрудников, которым уже не хватает таблиц, но рано внедрять тяжелый ERP.</p>
+      </div>
+      <div class="visual market-grid">
+        <div class="market-row"><strong>TAM</strong><div class="market-bar"><i style="width:96%"></i></div><b>$42B</b></div>
+        <div class="market-row"><strong>SAM</strong><div class="market-bar"><i style="width:62%"></i></div><b>$8.4B</b></div>
+        <div class="market-row"><strong>SOM</strong><div class="market-bar"><i style="width:28%"></i></div><b>$320M</b></div>
+        <div class="market-row"><strong>CAGR</strong><div class="market-bar"><i style="width:44%"></i></div><b>18%</b></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><img class="logo-dark" src="../brand/flowpilot_logo_dark.svg" alt="FlowPilot"><img class="logo-light" src="../brand/flowpilot_logo_light.svg" alt="FlowPilot"></div>
+      <div class="content">
+        <p class="eyebrow">Product</p>
+        <h2>Финансовый dashboard, который объясняет следующий шаг</h2>
+        <p>Главный экран показывает runway, cash gap risk, прогноз поступлений и расходы. Система не просто визуализирует данные, а предлагает сценарии.</p>
+      </div>
+      <div class="visual panel dashboard">
+        <div class="dash-grid">
+          <div class="dash-card">
+            <h3>Cash runway</h3>
+            <strong>8.6 months</strong>
+            <div class="line-chart"></div>
+          </div>
+          <div class="dash-card">
+            <h3>AI recommendations</h3>
+            <div class="alerts">
+              <div class="alert"><b>Reduce risk:</b> move supplier payment by 12 days.</div>
+              <div class="alert"><b>Scenario:</b> hire plan keeps runway above 6 months.</div>
+              <div class="alert"><b>Alert:</b> May revenue gap likely at 71% confidence.</div>
+            </div>
+          </div>
+          <div class="dash-card"><h3>MRR forecast</h3><strong>+$48K</strong></div>
+          <div class="dash-card"><h3>Cash gap risk</h3><strong style="color:var(--coral)">18%</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light">
+      <div class="brand"><img class="logo-dark" src="../brand/flowpilot_logo_dark.svg" alt="FlowPilot"><img class="logo-light" src="../brand/flowpilot_logo_light.svg" alt="FlowPilot"></div>
+      <div class="content">
+        <p class="eyebrow">Business model</p>
+        <h2>SaaS-подписка с ростом ARPA через интеграции</h2>
+        <p>Модель простая для покупки и расширяемая по мере роста бизнеса клиента.</p>
+      </div>
+      <div class="visual pricing-grid">
+        <div class="pricing-card"><h3>Start</h3><strong>$49</strong><small>per month</small><p>Для команд, которые переходят с таблиц на прогноз cash flow.</p></div>
+        <div class="pricing-card"><h3>Growth</h3><strong>$149</strong><small>per month</small><p>Интеграции, сценарии, alerts, командный доступ.</p></div>
+        <div class="pricing-card"><h3>Scale</h3><strong>$399</strong><small>per month</small><p>Advanced analytics, multi-entity, bank integrations.</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><img class="logo-dark" src="../brand/flowpilot_logo_dark.svg" alt="FlowPilot"><img class="logo-light" src="../brand/flowpilot_logo_light.svg" alt="FlowPilot"></div>
+      <div class="content">
+        <p class="eyebrow">Traction</p>
+        <h2>Ранние пилоты подтверждают спрос</h2>
+        <p>Команды готовы платить за прогноз и alerts, если интеграции занимают часы, а не недели.</p>
+      </div>
+      <div class="visual traction">
+        <div class="stat-card"><b>$38K</b><small>MRR на пилотной группе</small></div>
+        <div class="stat-card"><b>27</b><small>активных компаний в beta</small></div>
+        <div class="stat-card"><b>91%</b><small>monthly retention</small></div>
+        <div class="stat-card"><b>4.2x</b><small>pipeline coverage на следующий квартал</small></div>
+        <div class="stat-card"><b>18д</b><small>средний sales cycle</small></div>
+        <div class="stat-card"><b>3</b><small>партнерства с accounting-сервисами</small></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><img class="logo-dark" src="../brand/flowpilot_logo_dark.svg" alt="FlowPilot"><img class="logo-light" src="../brand/flowpilot_logo_light.svg" alt="FlowPilot"></div>
+      <div class="content">
+        <p class="eyebrow">Go-to-market</p>
+        <h2>Партнерский вход и land-and-expand</h2>
+        <p>FlowPilot заходит через бухгалтерские сервисы и CRM-маркетплейсы, затем расширяется внутри клиента за счет интеграций и team seats.</p>
+      </div>
+      <div class="visual roadmap">
+        <div class="road"><b>Q1</b><span>Accounting partners: co-marketing, webinars, marketplace listing.</span></div>
+        <div class="road"><b>Q2</b><span>Bank integrations: embedded cash-flow insights for SMB clients.</span></div>
+        <div class="road"><b>Q3</b><span>CRM ecosystems: HubSpot, Pipedrive, Zoho integrations.</span></div>
+        <div class="road"><b>Q4</b><span>Expansion motion: multi-entity finance teams and premium analytics.</span></div>
+      </div>
+    </section>
+
+    <section class="slide light">
+      <div class="brand"><img class="logo-dark" src="../brand/flowpilot_logo_dark.svg" alt="FlowPilot"><img class="logo-light" src="../brand/flowpilot_logo_light.svg" alt="FlowPilot"></div>
+      <div class="content">
+        <p class="eyebrow">Seed round</p>
+        <h2>Поднимаем $1.2M на 18 месяцев runway</h2>
+        <p>Раунд ускорит продукт, продажи и compliance, чтобы выйти из beta в масштабируемую self-serve модель.</p>
+        <div class="metric-row">
+          <div class="metric"><strong>$1.2M</strong><span>seed round</span></div>
+          <div class="metric"><strong>18м</strong><span>runway</span></div>
+          <div class="metric"><strong>$1.1M</strong><span>target ARR</span></div>
+        </div>
+      </div>
+      <div class="visual use-funds">
+        <div class="funds-circle"></div>
+        <div class="fund-list">
+          <div><span>Product & AI</span><b>42%</b></div>
+          <div><span>Sales & partnerships</span><b>28%</b></div>
+          <div><span>Compliance</span><b>18%</b></div>
+          <div><span>Operations</span><b>12%</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide closing">
+      <div class="brand"><img class="logo-dark" src="../brand/flowpilot_logo_dark.svg" alt="FlowPilot"><img class="logo-light" src="../brand/flowpilot_logo_light.svg" alt="FlowPilot"></div>
+      <div class="content">
+        <p class="eyebrow">FlowPilot / seed deck</p>
+        <h2>Бизнес должен видеть деньги вперед</h2>
+        <p>Мы строим AI-финансового помощника, который превращает хаос платежей, счетов и сделок в понятные решения для роста.</p>
+        <div class="chips" style="justify-content:center">
+          <span class="chip">flowpilot.ai</span>
+          <span class="chip">invest@flowpilot.ai</span>
+          <span class="chip">Seed $1.2M</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="controls" aria-label="Управление слайдами">
+    <button type="button" id="prev" aria-label="Предыдущий слайд">‹</button>
+    <div class="counter" id="counter">01 / 10</div>
+    <button type="button" id="next" aria-label="Следующий слайд">›</button>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const counter = document.querySelector("#counter");
+    const params = new URLSearchParams(location.search);
+    const exportMode = params.get("export") === "1";
+    let index = Math.min(slides.length - 1, Math.max(0, Number(params.get("slide") || 1) - 1));
+
+    if (exportMode) {
+      document.body.classList.add("export");
+    }
+
+    function render() {
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+      counter.textContent = `${String(index + 1).padStart(2, "0")} / ${slides.length}`;
+    }
+
+    document.querySelector("#prev").addEventListener("click", () => {
+      index = (index - 1 + slides.length) % slides.length;
+      render();
+    });
+
+    document.querySelector("#next").addEventListener("click", () => {
+      index = (index + 1) % slides.length;
+      render();
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === " ") {
+        index = (index + 1) % slides.length;
+        render();
+      }
+      if (event.key === "ArrowLeft") {
+        index = (index - 1 + slides.length) % slides.length;
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>

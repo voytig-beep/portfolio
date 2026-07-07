@@ -1,0 +1,8 @@
+<svg width="286" height="64" viewBox="0 0 286 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="18" fill="#F7F1E6"/>
+  <path d="M18 43C24 25 34 16 48 13" stroke="#0E8A83" stroke-width="5" stroke-linecap="round"/>
+  <path d="M18 43C31 42 43 35 50 22" stroke="#D7A446" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="44" cy="20" r="4" fill="#152234"/>
+  <text x="80" y="29" fill="#F7F1E6" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="760">Asteria Group</text>
+  <text x="82" y="47" fill="#AAB4BE" font-family="Segoe UI, Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="2.8">ANNUAL REPORT</text>
+</svg>

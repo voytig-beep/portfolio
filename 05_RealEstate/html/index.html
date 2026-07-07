@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Liora Residence - premium real estate deck</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #16201f;
+      --muted: #65716e;
+      --deep: #0f1718;
+      --paper: #f6f1e8;
+      --line: rgba(22,32,31,.14);
+      --white: #fffaf1;
+      --gold: #bda36d;
+      --olive: #6f806d;
+      --green: #1e3e3a;
+      --mist: #dfe5df;
+      font-family: Inter, Manrope, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: #0b0f10;
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #0b0f10;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(520px, 1.1fr);
+      gap: clamp(44px, 5vw, 96px);
+      align-items: center;
+      padding: clamp(56px, 5.2vw, 96px);
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+      transform: translateX(18px);
+      transition: opacity .34s ease, transform .34s ease;
+      background: linear-gradient(112deg, #fbf7ef 0%, #f1eee7 54%, #dfe5df 100%);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .slide.dark {
+      color: var(--white);
+      background: var(--deep);
+    }
+
+    .photo {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-position: center;
+      background-size: cover;
+      transform: scale(1.04);
+      filter: saturate(.94) contrast(1.04);
+    }
+
+    .photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(12,16,17,.92) 0%, rgba(12,16,17,.68) 45%, rgba(12,16,17,.18) 100%),
+        linear-gradient(180deg, rgba(12,16,17,.05), rgba(12,16,17,.82));
+    }
+
+    .soft-photo::after {
+      background:
+        linear-gradient(90deg, rgba(246,241,232,.94) 0%, rgba(246,241,232,.72) 44%, rgba(246,241,232,.2) 100%),
+        linear-gradient(180deg, rgba(246,241,232,.1), rgba(246,241,232,.64));
+    }
+
+    .hero { background-image: url("../assets/hero-exterior.png"); }
+    .facade { background-image: url("../assets/residence-exterior.png"); }
+    .interior { background-image: url("../assets/apartment-interior.png"); }
+    .terrace { background-image: url("../assets/rooftop-terrace.png"); }
+    .gallery-photo { background-image: url("../assets/sales-gallery.png"); }
+
+    .brand {
+      position: absolute;
+      z-index: 5;
+      top: clamp(24px, 3vw, 44px);
+      left: clamp(32px, 5.2vw, 96px);
+    }
+
+    .brand img {
+      display: block;
+      width: clamp(204px, 15vw, 286px);
+      height: auto;
+    }
+
+    .page-no {
+      position: absolute;
+      z-index: 5;
+      top: clamp(30px, 3vw, 46px);
+      right: clamp(32px, 5.2vw, 96px);
+      color: rgba(22,32,31,.48);
+      font-size: 13px;
+      font-weight: 820;
+      letter-spacing: 2px;
+    }
+
+    .dark .page-no { color: rgba(255,250,241,.62); }
+
+    .content,
+    .visual,
+    .wide {
+      position: relative;
+      z-index: 2;
+      min-width: 0;
+    }
+
+    .content {
+      max-width: 820px;
+      padding-top: 34px;
+    }
+
+    .eyebrow {
+      margin: 0 0 20px;
+      color: var(--gold);
+      font-size: clamp(13px, 1vw, 16px);
+      line-height: 1.3;
+      font-weight: 840;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      max-width: 960px;
+      font-weight: 800;
+      letter-spacing: 0;
+      line-height: .96;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+
+    h1 { font-size: clamp(58px, 7vw, 122px); }
+    h2 { font-size: clamp(44px, 5.1vw, 86px); }
+
+    p {
+      margin: 22px 0 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: clamp(18px, 1.35vw, 25px);
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .dark p { color: rgba(255,250,241,.76); }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    .chip {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 13px;
+      border: 1px solid rgba(255,250,241,.18);
+      border-radius: 999px;
+      background: rgba(255,250,241,.08);
+      color: rgba(255,250,241,.84);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .slide:not(.dark) .chip {
+      border-color: var(--line);
+      background: rgba(255,250,241,.68);
+      color: rgba(22,32,31,.76);
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.78);
+      box-shadow: 0 28px 90px rgba(22,32,31,.14);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .dark .panel {
+      border-color: rgba(255,250,241,.16);
+      background: rgba(255,250,241,.09);
+      box-shadow: 0 30px 90px rgba(0,0,0,.28);
+    }
+
+    .hero-card {
+      min-height: 600px;
+      padding: 30px;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .panel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 34px;
+      color: rgba(255,250,241,.72);
+      font-size: 13px;
+      font-weight: 820;
+    }
+
+    .slide:not(.dark) .panel-top { color: rgba(22,32,31,.62); }
+
+    .dots { display: flex; gap: 8px; }
+    .dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255,250,241,.34);
+    }
+
+    .slide:not(.dark) .dots span { background: rgba(22,32,31,.28); }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      min-height: 118px;
+      padding: 18px;
+      border: 1px solid rgba(255,250,241,.16);
+      background: rgba(255,250,241,.08);
+      display: grid;
+      align-content: space-between;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--white);
+      font-size: clamp(28px, 3vw, 48px);
+      line-height: 1;
+    }
+
+    .metric span {
+      color: rgba(255,250,241,.62);
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .wide {
+      width: 100%;
+      grid-column: 1 / -1;
+      padding-top: 32px;
+    }
+
+    .slide.full {
+      grid-template-columns: 1fr;
+      align-items: stretch;
+      gap: 28px;
+    }
+
+    .slide.full .wide h2 { max-width: 1120px; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .stat {
+      min-height: 260px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.78);
+      display: grid;
+      align-content: space-between;
+      transition: transform .24s ease, border-color .24s ease;
+    }
+
+    .stat:hover {
+      transform: translateY(-4px);
+      border-color: rgba(189,163,109,.48);
+    }
+
+    .stat small,
+    .card small {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 840;
+      text-transform: uppercase;
+    }
+
+    .stat strong {
+      color: var(--ink);
+      font-size: clamp(36px, 3.4vw, 58px);
+      line-height: .9;
+    }
+
+    .stat span,
+    .card span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.36;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: .92fr 1.08fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .image-panel {
+      min-height: 560px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .copy-panel {
+      min-height: 560px;
+      padding: 30px;
+      display: grid;
+      gap: 14px;
+      align-content: center;
+    }
+
+    .copy-row {
+      min-height: 92px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.72);
+      display: grid;
+      gap: 8px;
+    }
+
+    .copy-row b,
+    .card b,
+    .plan b {
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .copy-row span,
+    .plan span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .amenities {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      min-height: 210px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.78);
+      display: grid;
+      align-content: space-between;
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: .76fr 1.24fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .plan-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .plan-buttons button,
+    .controls button {
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .plan-buttons button {
+      min-height: 40px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,250,241,.72);
+      color: rgba(22,32,31,.74);
+      font-size: 13px;
+      font-weight: 780;
+    }
+
+    .plan-buttons button.active {
+      background: var(--ink);
+      color: var(--white);
+      border-color: var(--ink);
+    }
+
+    .plan-panel { display: none; }
+    .plan-panel.active,
+    body.export .plan-panel:first-child { display: grid; }
+    body.export .plan-panel:not(:first-child) { display: none; }
+
+    .plan {
+      min-height: 120px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.76);
+      gap: 10px;
+      align-content: center;
+    }
+
+    .floor-lines {
+      min-height: 540px;
+      padding: 30px;
+      display: grid;
+      align-content: center;
+      gap: 18px;
+      background:
+        linear-gradient(rgba(22,32,31,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(22,32,31,.08) 1px, transparent 1px),
+        rgba(255,250,241,.78);
+      background-size: 42px 42px;
+    }
+
+    .floor {
+      width: 78%;
+      margin: 0 auto;
+      aspect-ratio: 1.28;
+      border: 12px solid rgba(22,32,31,.74);
+      position: relative;
+      background: rgba(255,250,241,.46);
+    }
+
+    .floor i {
+      position: absolute;
+      display: block;
+      background: rgba(22,32,31,.72);
+    }
+
+    .floor i:nth-child(1) { left: 36%; top: 0; width: 10px; height: 58%; }
+    .floor i:nth-child(2) { left: 0; top: 42%; width: 62%; height: 10px; }
+    .floor i:nth-child(3) { right: 26%; top: 28%; width: 10px; height: 72%; }
+    .floor i:nth-child(4) { right: 0; bottom: 34%; width: 44%; height: 10px; }
+
+    .chart-panel {
+      min-height: 560px;
+      padding: 30px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 24px;
+    }
+
+    .bars {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 18px;
+      align-items: end;
+      height: 340px;
+      border-bottom: 1px solid rgba(255,250,241,.16);
+      padding: 0 10px;
+    }
+
+    .bar {
+      height: 100%;
+      display: grid;
+      gap: 10px;
+      align-items: end;
+      color: rgba(255,250,241,.66);
+      font-size: 13px;
+      font-weight: 760;
+      text-align: center;
+    }
+
+    .bar i {
+      display: block;
+      min-height: 24px;
+      border-radius: 10px 10px 0 0;
+      background: linear-gradient(180deg, var(--gold), rgba(189,163,109,.2));
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .step {
+      min-height: 330px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: rgba(255,250,241,.78);
+      display: grid;
+      align-content: space-between;
+    }
+
+    .step small {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 840;
+      text-transform: uppercase;
+    }
+
+    .step b {
+      color: var(--ink);
+      font-size: 26px;
+      line-height: 1.08;
+    }
+
+    .step span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .offer {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .price-card {
+      min-height: 540px;
+      padding: 32px;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .price-card strong {
+      color: var(--white);
+      font-size: 82px;
+      line-height: .9;
+    }
+
+    .contact-row {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-top: 1px solid rgba(255,250,241,.16);
+      color: rgba(255,250,241,.9);
+      font-size: 18px;
+      font-weight: 820;
+    }
+
+    .contact-row span {
+      color: rgba(255,250,241,.58);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .55s ease, transform .55s ease;
+      transition-delay: var(--d, 0ms);
+    }
+
+    .active .reveal,
+    body.export .reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    body.export .slide { transition: none; }
+    body.export .controls { display: none; }
+
+    .controls {
+      position: fixed;
+      z-index: 40;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid rgba(22,32,31,.14);
+      border-radius: 999px;
+      background: rgba(255,250,241,.78);
+      box-shadow: 0 18px 54px rgba(22,32,31,.18);
+      backdrop-filter: blur(16px);
+    }
+
+    .controls button {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--white);
+      font-size: 20px;
+    }
+
+    .counter {
+      min-width: 72px;
+      text-align: center;
+      color: rgba(22,32,31,.72);
+      font-size: 13px;
+      font-weight: 820;
+    }
+
+    @media (max-width: 900px) {
+      body { overflow: auto; }
+      .deck { height: auto; min-height: 100vh; }
+      .slide {
+        position: relative;
+        display: none;
+        min-height: 100vh;
+        grid-template-columns: 1fr;
+        padding: 100px 24px 78px;
+        opacity: 1;
+        transform: none;
+      }
+      .slide.active { display: grid; }
+      .hero-metrics,
+      .stat-grid,
+      .split,
+      .amenities,
+      .plans,
+      .flow,
+      .offer {
+        grid-template-columns: 1fr;
+      }
+      h1 { font-size: clamp(46px, 12vw, 74px); }
+      h2 { font-size: clamp(38px, 10vw, 62px); }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-label="Liora Residence premium real estate presentation">
+    <section class="slide dark active" data-slide="1">
+      <div class="photo hero"></div>
+      <div class="brand"><img src="../brand/liora_logo_light.svg" alt="Liora Residence"></div>
+      <div class="page-no">01 / 10</div>
+      <div class="content">
+        <p class="eyebrow reveal">Private estate / премиальная недвижимость</p>
+        <h1 class="reveal" style="--d:80ms">Дом, который продает тишину</h1>
+        <p class="reveal" style="--d:160ms">Liora Residence - камерный жилой дом бизнес-премиум класса с приватной инфраструктурой, видовыми квартирами и спокойной архитектурой.</p>
+        <div class="chips reveal" style="--d:240ms">
+          <span class="chip">24 этажа</span>
+          <span class="chip">186 квартир</span>
+          <span class="chip">закрытый двор</span>
+          <span class="chip">видовые террасы</span>
+        </div>
+      </div>
+      <div class="visual reveal" style="--d:180ms">
+        <div class="panel hero-card">
+          <div class="panel-top">Sales presentation <div class="dots"><span></span><span></span><span></span></div></div>
+          <div></div>
+          <div class="hero-metrics">
+            <div class="metric"><strong>186</strong><span>квартир</span></div>
+            <div class="metric"><strong>42-148</strong><span>м² площади</span></div>
+            <div class="metric"><strong>2027</strong><span>срок сдачи</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="2">
+      <div class="brand"><img src="../brand/liora_logo_dark.svg" alt="Liora Residence"></div>
+      <div class="page-no">02 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Project highlights</p>
+        <h2 class="reveal" style="--d:80ms">Премиальность объясняется цифрами и ощущением приватности</h2>
+      </div>
+      <div class="stat-grid">
+        <div class="stat reveal"><small>Location</small><strong>12 мин</strong><span>до делового центра и набережной</span></div>
+        <div class="stat reveal" style="--d:80ms"><small>Privacy</small><strong>8</strong><span>квартир на этаже в основной секции</span></div>
+        <div class="stat reveal" style="--d:160ms"><small>Yard</small><strong>0 авто</strong><span>закрытый двор без машин</span></div>
+        <div class="stat reveal" style="--d:240ms"><small>Views</small><strong>72%</strong><span>квартир с открытыми видовыми сценариями</span></div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="3">
+      <div class="photo facade soft-photo"></div>
+      <div class="brand"><img src="../brand/liora_logo_dark.svg" alt="Liora Residence"></div>
+      <div class="page-no">03 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Architecture</p>
+        <h2 class="reveal" style="--d:80ms">Архитектура без визуального шума</h2>
+      </div>
+      <div class="split">
+        <div class="panel image-panel reveal" style="--d:140ms; background-image:url('../assets/residence-exterior.png')"></div>
+        <div class="copy-panel reveal" style="--d:220ms">
+          <div class="copy-row"><b>Натуральные материалы</b><span>Камень, металл и стекло без декоративной перегрузки.</span></div>
+          <div class="copy-row"><b>Теплый входной сценарий</b><span>Лобби видно с улицы, но приватная часть отделена от городского потока.</span></div>
+          <div class="copy-row"><b>Мягкая вечерняя подсветка</b><span>Фасад работает как спокойный городской ориентир.</span></div>
+          <div class="copy-row"><b>Камерный масштаб</b><span>Дом считывается как частный клуб, а не массовый комплекс.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-slide="4">
+      <div class="photo interior soft-photo"></div>
+      <div class="brand"><img src="../brand/liora_logo_dark.svg" alt="Liora Residence"></div>
+      <div class="page-no">04 / 10</div>
+      <div class="content">
+        <p class="eyebrow reveal">Interior concept</p>
+        <h2 class="reveal" style="--d:80ms">Интерьеры продают не метры, а сценарий жизни</h2>
+        <p class="reveal" style="--d:160ms">В презентации акцент не на “дорогих материалах”, а на понятной пользе: свет, тишина, виды, хранение, гибкие планировки и ощущение собственного пространства.</p>
+      </div>
+      <div class="visual reveal" style="--d:180ms">
+        <div class="panel copy-panel">
+          <div class="copy-row"><b>Панорамные окна</b><span>Больше света и глубины в ежедневном сценарии.</span></div>
+          <div class="copy-row"><b>Кухня-гостиная</b><span>Единая зона для семьи, гостей и спокойного вечера.</span></div>
+          <div class="copy-row"><b>Мастер-блок</b><span>Собственная спальня, гардеробная и ванная без компромиссов.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="5">
+      <div class="brand"><img src="../brand/liora_logo_dark.svg" alt="Liora Residence"></div>
+      <div class="page-no">05 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Apartment mix</p>
+        <h2 class="reveal" style="--d:80ms">Планировки подобраны под разные сценарии покупки</h2>
+        <div class="plan-buttons reveal" style="--d:160ms">
+          <button type="button" class="active" data-plan="city">City suite</button>
+          <button type="button" data-plan="family">Family residence</button>
+          <button type="button" data-plan="sky">Sky terrace</button>
+        </div>
+      </div>
+      <div class="plans">
+        <div>
+          <div class="plan plan-panel active reveal" data-panel="city" style="--d:220ms"><b>42-58 м²</b><span>Компактные квартиры для личного проживания или инвестиционной покупки.</span></div>
+          <div class="plan plan-panel" data-panel="family"><b>78-104 м²</b><span>Двух- и трехспальные варианты с мастер-блоком и хранением.</span></div>
+          <div class="plan plan-panel" data-panel="sky"><b>118-148 м²</b><span>Видовые квартиры с террасой и приватной дневной зоной.</span></div>
+          <div class="card reveal" style="--d:300ms"><small>Sales logic</small><b>Не одна “идеальная” квартира</b><span>Презентация показывает продуктовую линейку так, чтобы клиент быстро нашел свой сценарий.</span></div>
+        </div>
+        <div class="panel floor-lines reveal" style="--d:260ms">
+          <div class="floor" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <p>Планировки объясняются через сценарии: для жизни одному, для семьи, для видового премиального формата.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="6">
+      <div class="photo terrace soft-photo"></div>
+      <div class="brand"><img src="../brand/liora_logo_dark.svg" alt="Liora Residence"></div>
+      <div class="page-no">06 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Amenities</p>
+        <h2 class="reveal" style="--d:80ms">Инфраструктура работает как продолжение квартиры</h2>
+      </div>
+      <div class="amenities">
+        <div class="card reveal" style="--d:160ms"><small>Lobby</small><b>Клубное лобби</b><span>Зона встреч, ожидания и спокойной работы вне квартиры.</span></div>
+        <div class="card reveal" style="--d:220ms"><small>Wellness</small><b>Фитнес и spa</b><span>Ежедневный сервис без поездок и лишнего планирования.</span></div>
+        <div class="card reveal" style="--d:280ms"><small>Yard</small><b>Закрытый двор</b><span>Зеленый сценарий для прогулок, детей и приватных встреч.</span></div>
+        <div class="card reveal" style="--d:340ms"><small>Terrace</small><b>Sky lounge</b><span>Видовая терраса для резидентов и вечерних событий.</span></div>
+        <div class="card reveal" style="--d:400ms"><small>Parking</small><b>Паркинг и storage</b><span>Личный маршрут от автомобиля до квартиры без улицы.</span></div>
+        <div class="card reveal" style="--d:460ms"><small>Service</small><b>Concierge</b><span>Бытовые задачи решаются через единый сервис резиденции.</span></div>
+      </div>
+    </section>
+
+    <section class="slide dark" data-slide="7">
+      <div class="photo terrace"></div>
+      <div class="brand"><img src="../brand/liora_logo_light.svg" alt="Liora Residence"></div>
+      <div class="page-no">07 / 10</div>
+      <div class="content">
+        <p class="eyebrow reveal">Investment case</p>
+        <h2 class="reveal" style="--d:80ms">Покупатель видит не скидку, а потенциал стоимости</h2>
+        <p class="reveal" style="--d:160ms">Инвестиционный слайд связывает этап строительства, дефицит видовых лотов, рост района и понятную логику входа на ранней стадии.</p>
+      </div>
+      <div class="visual reveal" style="--d:180ms">
+        <div class="panel chart-panel">
+          <div class="panel-top">Price index, launch = 100 <div class="dots"><span></span><span></span><span></span></div></div>
+          <div class="bars">
+            <div class="bar"><i style="height:34%"></i><span>Q1</span></div>
+            <div class="bar"><i style="height:42%"></i><span>Q2</span></div>
+            <div class="bar"><i style="height:51%"></i><span>Q3</span></div>
+            <div class="bar"><i style="height:63%"></i><span>Q4</span></div>
+            <div class="bar"><i style="height:78%"></i><span>2026</span></div>
+            <div class="bar"><i style="height:92%"></i><span>2027</span></div>
+          </div>
+          <p>Сценарий роста цены: +18-24% к моменту ввода при сохранении текущей динамики района.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="8">
+      <div class="brand"><img src="../brand/liora_logo_dark.svg" alt="Liora Residence"></div>
+      <div class="page-no">08 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Buyer journey</p>
+        <h2 class="reveal" style="--d:80ms">Путь клиента собран без давления и лишних касаний</h2>
+      </div>
+      <div class="flow">
+        <div class="step reveal" style="--d:160ms"><small>Step 01</small><b>Подбор сценария</b><span>Клиент выбирает не метраж, а образ жизни: city, family или sky.</span></div>
+        <div class="step reveal" style="--d:220ms"><small>Step 02</small><b>Показ лота</b><span>Планировка, вид, этаж, свет и приватность объясняются одним экраном.</span></div>
+        <div class="step reveal" style="--d:280ms"><small>Step 03</small><b>Финансовая рамка</b><span>Стоимость, рассрочка, ипотека и инвестиционная логика без перегруза.</span></div>
+        <div class="step reveal" style="--d:340ms"><small>Step 04</small><b>Бронь</b><span>Короткий финальный шаг с понятным сроком фиксации условий.</span></div>
+      </div>
+    </section>
+
+    <section class="slide full" data-slide="9">
+      <div class="photo gallery-photo soft-photo"></div>
+      <div class="brand"><img src="../brand/liora_logo_dark.svg" alt="Liora Residence"></div>
+      <div class="page-no">09 / 10</div>
+      <div class="wide">
+        <p class="eyebrow reveal">Commercial offer</p>
+        <h2 class="reveal" style="--d:80ms">Формат предложения легко адаптируется под клиента</h2>
+      </div>
+      <div class="offer">
+        <div class="panel image-panel reveal" style="--d:160ms; background-image:url('../assets/sales-gallery.png')"></div>
+        <div class="copy-panel reveal" style="--d:220ms">
+          <div class="copy-row"><b>Персональная подборка</b><span>3-5 лотов под бюджет, этажность, вид и сценарий жизни.</span></div>
+          <div class="copy-row"><b>Финансовые условия</b><span>Рассрочка, ипотека, 100% оплата и фиксация цены на период брони.</span></div>
+          <div class="copy-row"><b>Материалы для решения</b><span>PDF, PPTX, интерактивная HTML-версия и короткое видео-превью.</span></div>
+          <div class="copy-row"><b>Следующее действие</b><span>Встреча в sales gallery или приватный онлайн-показ.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide dark" data-slide="10">
+      <div class="photo facade"></div>
+      <div class="brand"><img src="../brand/liora_logo_light.svg" alt="Liora Residence"></div>
+      <div class="page-no">10 / 10</div>
+      <div class="content">
+        <p class="eyebrow reveal">Private viewing</p>
+        <h2 class="reveal" style="--d:80ms">Запланируйте личный показ Liora Residence</h2>
+        <p class="reveal" style="--d:160ms">Презентация ведет клиента от эмоционального образа дома к конкретному выбору лота, условий и следующего шага.</p>
+        <div class="chips reveal" style="--d:240ms">
+          <span class="chip">sales gallery</span>
+          <span class="chip">private tour</span>
+          <span class="chip">lot selection</span>
+        </div>
+      </div>
+      <div class="visual reveal" style="--d:180ms">
+        <div class="panel price-card">
+          <div class="panel-top">Liora Residence <div class="dots"><span></span><span></span><span></span></div></div>
+          <div>
+            <p class="eyebrow">Старт продаж</p>
+            <strong>от 24,8 млн ₽</strong>
+            <p>Лоты 42-148 м², приватная инфраструктура, видовые сценарии и гибкие условия бронирования.</p>
+          </div>
+          <div>
+            <div class="contact-row">liora.example <span>планировки и цены</span></div>
+            <div class="contact-row">+7 999 123-45-67 <span>личный показ</span></div>
+            <div class="contact-row">sales@liora.example <span>отдел продаж</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="controls" aria-label="Навигация по презентации">
+    <button type="button" data-dir="-1" aria-label="Предыдущий слайд">‹</button>
+    <div class="counter" aria-live="polite">1 / 10</div>
+    <button type="button" data-dir="1" aria-label="Следующий слайд">›</button>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const counter = document.querySelector(".counter");
+    const params = new URLSearchParams(window.location.search);
+    const exportMode = params.get("export") === "1";
+    let current = Math.min(Math.max(Number(params.get("slide") || 1), 1), slides.length) - 1;
+
+    if (exportMode) document.body.classList.add("export");
+
+    function show(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+      counter.textContent = `${current + 1} / ${slides.length}`;
+    }
+
+    document.querySelectorAll("[data-dir]").forEach((button) => {
+      button.addEventListener("click", () => show(current + Number(button.dataset.dir)));
+    });
+
+    document.querySelectorAll("[data-plan]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = button.dataset.plan;
+        const slide = button.closest(".slide");
+        slide.querySelectorAll("[data-plan]").forEach((item) => item.classList.toggle("active", item === button));
+        slide.querySelectorAll("[data-panel]").forEach((panel) => panel.classList.toggle("active", panel.dataset.panel === target));
+      });
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === " ") show(current + 1);
+      if (event.key === "ArrowLeft") show(current - 1);
+    });
+
+    show(current);
+  </script>
+</body>
+</html>
