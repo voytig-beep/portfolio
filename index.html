@@ -105,52 +105,61 @@
     .motion-stage {
       position: absolute;
       z-index: 1;
-      top: 124px;
+      top: 118px;
       right: max(28px, calc((100vw - 1180px) / 2));
-      width: min(36vw, 540px);
-      height: 62vh;
+      width: min(34vw, 520px);
+      height: 58vh;
+      min-height: 430px;
       pointer-events: none;
-      opacity: .66;
+      opacity: .78;
       transform: translate3d(calc(var(--mx) * .2), calc(var(--my) * .16), 0);
+    }
+
+    .motion-orbit {
+      position: absolute;
+      inset: 2%;
+      --orbit-radius: clamp(120px, 10vw, 165px);
+      animation: orbitSpin 30s linear infinite;
+      transform-origin: 50% 50%;
+    }
+
+    .motion-orbit::before {
+      content: "";
+      position: absolute;
+      inset: 22%;
+      border: 1px solid rgba(244,244,242,.12);
+      border-radius: 50%;
+      box-shadow: 0 0 90px rgba(255,255,255,.06);
     }
 
     .motion-frame {
       position: absolute;
-      width: 58%;
+      top: 50%;
+      left: 50%;
+      width: clamp(138px, 13vw, 210px);
       aspect-ratio: 16 / 9;
+      transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--orbit-radius));
+    }
+
+    .motion-card {
+      width: 100%;
+      height: 100%;
       border: 1px solid rgba(244,244,242,.18);
       background: rgba(255,255,255,.05);
       box-shadow: 0 30px 90px rgba(0,0,0,.34);
       overflow: hidden;
-      opacity: .82;
-      animation: floatFrame 9s ease-in-out infinite;
+      opacity: .88;
+      transform: rotate(var(--counter-angle));
+      animation: counterOrbit 30s linear infinite;
     }
 
-    .motion-frame img {
+    .motion-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       filter: saturate(.95) contrast(1.05);
       transform: scale(1.04);
       animation: imagePan 14s ease-in-out infinite alternate;
-    }
-
-    .motion-frame.one {
-      top: 0;
-      right: 2%;
-      animation-delay: 0s;
-    }
-
-    .motion-frame.two {
-      top: 34%;
-      left: 22%;
-      animation-delay: -2.8s;
-    }
-
-    .motion-frame.three {
-      right: 9%;
-      bottom: 2%;
-      animation-delay: -5.4s;
     }
 
     .topbar,
@@ -640,9 +649,14 @@
       to { background-position: 0 0, 0 0, 0 54px; }
     }
 
-    @keyframes floatFrame {
-      0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); }
-      50% { transform: translate3d(0, -24px, 0) rotate(1deg); }
+    @keyframes orbitSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes counterOrbit {
+      from { transform: rotate(var(--counter-angle)); }
+      to { transform: rotate(calc(var(--counter-angle) - 360deg)); }
     }
 
     @keyframes imagePan {
@@ -782,14 +796,32 @@
       </div>
 
       <div class="motion-stage" aria-hidden="true">
-        <div class="motion-frame one">
-          <img src="03_ProductDeck/exports/slides/slide_01.png" alt="">
-        </div>
-        <div class="motion-frame two">
-          <img src="04_AnnualReport/exports/slides/slide_08.png" alt="">
-        </div>
-        <div class="motion-frame three">
-          <img src="05_RealEstate/exports/slides/slide_01.png" alt="">
+        <div class="motion-orbit">
+          <div class="motion-frame" style="--angle: 0deg; --counter-angle: 0deg;">
+            <div class="motion-card">
+              <img src="01_TechVision/exports/pptx_match_slides/slide_01.png" alt="">
+            </div>
+          </div>
+          <div class="motion-frame" style="--angle: 72deg; --counter-angle: -72deg;">
+            <div class="motion-card">
+              <img src="02_InvestPitch/exports/slides/slide_01.png" alt="">
+            </div>
+          </div>
+          <div class="motion-frame" style="--angle: 144deg; --counter-angle: -144deg;">
+            <div class="motion-card">
+              <img src="03_ProductDeck/exports/slides/slide_01.png" alt="">
+            </div>
+          </div>
+          <div class="motion-frame" style="--angle: 216deg; --counter-angle: -216deg;">
+            <div class="motion-card">
+              <img src="04_AnnualReport/exports/slides/slide_08.png" alt="">
+            </div>
+          </div>
+          <div class="motion-frame" style="--angle: 288deg; --counter-angle: -288deg;">
+            <div class="motion-card">
+              <img src="05_RealEstate/exports/slides/slide_01.png" alt="">
+            </div>
+          </div>
         </div>
       </div>
 
