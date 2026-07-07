@@ -1203,6 +1203,34 @@
       document.body.style.setProperty("--mx", `${x}px`);
       document.body.style.setProperty("--my", `${y}px`);
     }, { passive: true });
+
+    const tickerTrack = document.querySelector(".ticker-track");
+    if (tickerTrack) {
+      tickerTrack.style.animation = "none";
+      let tickerWidth = tickerTrack.scrollWidth / 2;
+      let tickerOffset = 0;
+      let tickerTime = performance.now();
+
+      const updateTickerWidth = () => {
+        tickerWidth = tickerTrack.scrollWidth / 2;
+      };
+
+      const moveTicker = (time) => {
+        const delta = Math.min(time - tickerTime, 64);
+        tickerTime = time;
+        if (!tickerWidth) {
+          updateTickerWidth();
+          requestAnimationFrame(moveTicker);
+          return;
+        }
+        tickerOffset = (tickerOffset + delta * .12) % tickerWidth;
+        tickerTrack.style.transform = `translate3d(${-tickerOffset}px, 0, 0)`;
+        requestAnimationFrame(moveTicker);
+      };
+
+      window.addEventListener("resize", updateTickerWidth, { passive: true });
+      requestAnimationFrame(moveTicker);
+    }
   </script>
 </body>
 </html>
