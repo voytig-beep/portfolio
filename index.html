@@ -358,8 +358,11 @@
 
     .ticker-track {
       display: flex;
+      flex-wrap: nowrap;
       width: max-content;
-      animation: tickerMove 24s linear infinite;
+      min-width: max-content;
+      will-change: transform;
+      animation: tickerMove 14s linear infinite;
     }
 
     .ticker span {
@@ -778,6 +781,10 @@
 
       .motion-card {
         animation: counterOrbit 24s linear infinite !important;
+      }
+
+      .ticker-track {
+        animation: tickerMove 14s linear infinite !important;
       }
     }
   </style>
