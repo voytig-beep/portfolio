@@ -314,6 +314,7 @@
     .cards.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
     .card {
+      min-width: 0;
       padding: 22px;
       border: 1px solid var(--line);
       background: rgba(255,255,255,.62);
@@ -334,8 +335,9 @@
 
     .card h3 {
       margin: 14px 0 8px;
-      font-size: clamp(22px, 2vw, 34px);
-      line-height: 1;
+      font-size: clamp(22px, 1.55vw, 30px);
+      line-height: 1.06;
+      overflow-wrap: anywhere;
     }
 
     .card p {
@@ -578,7 +580,7 @@
       </div>
       <div class="visual cards three">
         <div class="card"><small>Блок 1</small><h3>Карта потока</h3><p>Живая карта очередей, задержек и доступных кабинетов.</p></div>
-        <div class="card"><small>Блок 2</small><h3>Распределение</h3><p>Автоматические подсказки по срочности и лучшему окну.</p></div>
+        <div class="card"><small>Блок 2</small><h3>Назначение</h3><p>Автоматические подсказки по срочности и лучшему окну.</p></div>
         <div class="card"><small>Блок 3</small><h3>Пульс обслуживания</h3><p>Показатели оценки, возврата и нагрузки по филиалам.</p></div>
       </div>
     </section>
