@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VitaFlow - healthtech operations deck</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7fbf8;
+      --paper-2: #eef7f2;
+      --ink: #111817;
+      --muted: #697875;
+      --line: rgba(17,24,23,.12);
+      --mint: #79c7ad;
+      --teal: #0b6f6f;
+      --blue: #8db7ff;
+      --rose: #e98585;
+      --dark: #071313;
+      font-family: Inter, Manrope, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: #061111;
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: var(--paper);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(480px, 1.08fr);
+      gap: clamp(38px, 5vw, 92px);
+      align-items: center;
+      padding: clamp(54px, 6vw, 96px);
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(24px);
+      transition: opacity .36s ease, transform .36s ease;
+      background:
+        radial-gradient(circle at 18% 16%, rgba(121,199,173,.28), transparent 32%),
+        radial-gradient(circle at 86% 22%, rgba(141,183,255,.28), transparent 30%),
+        linear-gradient(116deg, #fbfff8 0%, #eef8f3 54%, #eaf3ff 100%);
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(17,24,23,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17,24,23,.045) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(90deg, #000 0%, rgba(0,0,0,.62) 56%, transparent 100%);
+    }
+
+    .slide.dark {
+      color: #f4fbf7;
+      background:
+        radial-gradient(circle at 78% 20%, rgba(121,199,173,.18), transparent 31%),
+        radial-gradient(circle at 22% 78%, rgba(141,183,255,.18), transparent 32%),
+        linear-gradient(116deg, #041010 0%, #071b1b 58%, #08131e 100%);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .brand {
+      position: absolute;
+      z-index: 3;
+      top: 44px;
+      left: 54px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+    }
+
+    .mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #f7fff9;
+      background: linear-gradient(135deg, var(--teal), var(--mint));
+      box-shadow: 0 18px 36px rgba(11,111,111,.22);
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 8px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+    }
+
+    .dark .brand small { color: rgba(244,251,247,.58); }
+
+    .content,
+    .visual {
+      position: relative;
+      z-index: 2;
+    }
+
+    .eyebrow {
+      margin: 0 0 20px;
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .dark .eyebrow { color: #9be8ca; }
+
+    h1,
+    h2 {
+      margin: 0;
+      max-width: 720px;
+      color: inherit;
+      font-size: clamp(54px, 7vw, 108px);
+      line-height: .9;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    h2 { font-size: clamp(46px, 5.6vw, 82px); }
+
+    .lead {
+      max-width: 590px;
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: clamp(18px, 1.6vw, 25px);
+      line-height: 1.34;
+    }
+
+    .dark .lead { color: rgba(244,251,247,.72); }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 34px;
+    }
+
+    .chip {
+      min-height: 34px;
+      padding: 8px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--teal);
+      background: rgba(255,255,255,.52);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .dark .chip {
+      border-color: rgba(255,255,255,.16);
+      color: #baf2d9;
+      background: rgba(255,255,255,.07);
+    }
+
+    .panel {
+      position: relative;
+      padding: 26px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.72);
+      box-shadow: 0 28px 70px rgba(31,61,58,.14);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+    }
+
+    .dark .panel {
+      border-color: rgba(255,255,255,.12);
+      background: rgba(255,255,255,.07);
+      box-shadow: 0 30px 90px rgba(0,0,0,.32);
+    }
+
+    .dashboard {
+      display: grid;
+      gap: 14px;
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: linear-gradient(145deg, #082020, #061313);
+      color: #f7fffb;
+      box-shadow: 0 34px 90px rgba(7,19,19,.28);
+    }
+
+    .dash-top,
+    .dash-row,
+    .metric-row,
+    .roadmap {
+      display: grid;
+      gap: 12px;
+    }
+
+    .dash-top {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+
+    .dash-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .pulse {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 0 9px rgba(121,199,173,.16);
+    }
+
+    .dash-row {
+      grid-template-columns: 1.15fr .85fr;
+    }
+
+    .queue {
+      display: grid;
+      gap: 10px;
+    }
+
+    .queue-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+    }
+
+    .queue-item strong,
+    .metric strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .queue-item span,
+    .metric span {
+      color: rgba(247,255,251,.62);
+      font-size: 12px;
+    }
+
+    .badge {
+      padding: 6px 9px;
+      border-radius: 999px;
+      color: #061313;
+      background: var(--mint);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .metric-row {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .metric {
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+    }
+
+    .metric b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .chart {
+      height: 210px;
+      display: flex;
+      align-items: end;
+      gap: 10px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+    }
+
+    .bar {
+      flex: 1;
+      min-width: 18px;
+      background: linear-gradient(180deg, var(--mint), #186f70);
+    }
+
+    .cards {
+      display: grid;
+      gap: 14px;
+    }
+
+    .cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cards.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card {
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.62);
+    }
+
+    .dark .card {
+      border-color: rgba(255,255,255,.12);
+      background: rgba(255,255,255,.07);
+    }
+
+    .card small {
+      color: var(--teal);
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .dark .card small { color: #9be8ca; }
+
+    .card h3 {
+      margin: 14px 0 8px;
+      font-size: clamp(22px, 2vw, 34px);
+      line-height: 1;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .dark .card p { color: rgba(244,251,247,.66); }
+
+    .journey {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.66);
+    }
+
+    .step {
+      min-height: 310px;
+      padding: 24px;
+      border-right: 1px solid var(--line);
+    }
+
+    .step:last-child { border-right: 0; }
+
+    .step b {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      margin-bottom: 70px;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--teal);
+    }
+
+    .heatmap {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.62);
+    }
+
+    .cell {
+      aspect-ratio: 1;
+      background: rgba(121,199,173,var(--a));
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
+
+    .milestone {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 18px;
+      align-items: start;
+      padding: 20px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.65);
+    }
+
+    .milestone b {
+      color: var(--teal);
+      font-size: 24px;
+    }
+
+    .controls {
+      position: fixed;
+      z-index: 20;
+      left: 50%;
+      bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 9px;
+      border: 1px solid rgba(17,24,23,.1);
+      border-radius: 999px;
+      background: rgba(255,255,255,.72);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      transform: translateX(-50%);
+      box-shadow: 0 18px 45px rgba(17,24,23,.12);
+    }
+
+    .controls button,
+    .portfolio-home-link {
+      border: 0;
+      color: #fff;
+      background: #071313;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .controls button {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      font-size: 22px;
+    }
+
+    .counter {
+      min-width: 58px;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .portfolio-home-link {
+      position: fixed;
+      z-index: 30;
+      top: 18px;
+      right: 18px;
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0 15px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 999px;
+      background: rgba(8,8,10,.72);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    body.export .controls,
+    body.export .portfolio-home-link {
+      display: none;
+    }
+
+    @media (max-width: 820px) {
+      body { overflow: auto; }
+      .deck { height: auto; min-height: 100vh; }
+      .slide {
+        position: relative;
+        min-height: 100vh;
+        display: none;
+        grid-template-columns: 1fr;
+        padding: 96px 22px 110px;
+      }
+      .slide.active { display: grid; }
+      .brand { top: 22px; left: 22px; }
+      h1, h2 { font-size: 48px; }
+      .cards.two,
+      .cards.three,
+      .journey,
+      .dash-row,
+      .metric-row {
+        grid-template-columns: 1fr;
+      }
+      .step { min-height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+      .step b { margin-bottom: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="portfolio-home-link" href="../../index.html" aria-label="Вернуться на главную страницу">← На главную</a>
+  <main class="deck" aria-label="VitaFlow healthtech operations presentation">
+    <section class="slide active">
+      <div class="brand"><div class="mark">V</div><div>VitaFlow<small>clinical ops ai</small></div></div>
+      <div class="content">
+        <p class="eyebrow">01 / HealthTech operations</p>
+        <h1>Клиника без очередей</h1>
+        <p class="lead">VitaFlow объединяет запись, загрузку врачей, маршрутизацию пациентов и операционные метрики в один понятный центр управления.</p>
+        <div class="chips"><span class="chip">AI triage</span><span class="chip">Capacity planning</span><span class="chip">Patient journey</span></div>
+      </div>
+      <div class="visual dashboard">
+        <div class="dash-top"><p class="dash-title">Clinical command center</p><div class="pulse"></div></div>
+        <div class="metric-row">
+          <div class="metric"><b>18m</b><span>среднее ожидание</span></div>
+          <div class="metric"><b>91%</b><span>загрузка врачей</span></div>
+          <div class="metric"><b>4.8</b><span>оценка пациента</span></div>
+        </div>
+        <div class="dash-row">
+          <div class="queue">
+            <div class="queue-item"><div><strong>Cardiology check-up</strong><span>slot conflict resolved</span></div><i class="badge">auto</i></div>
+            <div class="queue-item"><div><strong>Pediatrics queue</strong><span>extra room assigned</span></div><i class="badge">live</i></div>
+            <div class="queue-item"><div><strong>MRI request</strong><span>priority route suggested</span></div><i class="badge">ai</i></div>
+          </div>
+          <div class="chart"><i class="bar" style="height:42%"></i><i class="bar" style="height:66%"></i><i class="bar" style="height:54%"></i><i class="bar" style="height:86%"></i><i class="bar" style="height:72%"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><div class="mark">V</div><div>VitaFlow<small>clinical ops ai</small></div></div>
+      <div class="content">
+        <p class="eyebrow">02 / Проблема</p>
+        <h2>Пациент видит хаос раньше менеджмента</h2>
+        <p class="lead">Запись живет отдельно от расписания, врачи видят перегрузку слишком поздно, а администраторы тушат очереди вручную.</p>
+      </div>
+      <div class="visual cards three">
+        <div class="card"><small>01</small><h3>Слепые окна</h3><p>Свободные слоты есть, но система не предлагает их пациенту в нужный момент.</p></div>
+        <div class="card"><small>02</small><h3>Ручной контроль</h3><p>Администратор постоянно переключается между звонками, чатами и расписанием.</p></div>
+        <div class="card"><small>03</small><h3>Нет раннего сигнала</h3><p>Пиковая нагрузка становится заметной, когда очередь уже сформировалась.</p></div>
+      </div>
+    </section>
+
+    <section class="slide dark">
+      <div class="brand"><div class="mark">V</div><div>VitaFlow<small>clinical ops ai</small></div></div>
+      <div class="content">
+        <p class="eyebrow">03 / Цель</p>
+        <h2>Сократить ожидание без расширения штата</h2>
+        <p class="lead">Система должна перераспределять поток пациентов, показывать узкие места и давать управленцу действия, а не просто отчеты.</p>
+      </div>
+      <div class="visual metric-row">
+        <div class="metric"><b>-32%</b><span>ожидание приема</span></div>
+        <div class="metric"><b>+18%</b><span>использование кабинетов</span></div>
+        <div class="metric"><b>2.4x</b><span>быстрее реакция на пик</span></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><div class="mark">V</div><div>VitaFlow<small>clinical ops ai</small></div></div>
+      <div class="content">
+        <p class="eyebrow">04 / Patient journey</p>
+        <h2>Один маршрут вместо пяти разрывов</h2>
+        <p class="lead">Пациент проходит путь от заявки до повторного визита, а клиника видит все события как единую цепочку.</p>
+      </div>
+      <div class="visual journey">
+        <div class="step"><b>1</b><h3>Запрос</h3><p>Онлайн, звонок или мессенджер попадают в общий поток.</p></div>
+        <div class="step"><b>2</b><h3>Триаж</h3><p>AI предлагает приоритет, врача и оптимальное окно.</p></div>
+        <div class="step"><b>3</b><h3>Прием</h3><p>Администратор видит загрузку кабинетов и задержки.</p></div>
+        <div class="step"><b>4</b><h3>Возврат</h3><p>Система ставит follow-up и снижает потери пациентов.</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><div class="mark">V</div><div>VitaFlow<small>clinical ops ai</small></div></div>
+      <div class="content">
+        <p class="eyebrow">05 / Решение</p>
+        <h2>Три модуля для операционного контроля</h2>
+        <p class="lead">VitaFlow не заменяет медицинскую систему, а собирает вокруг нее слой управления потоком и качеством сервиса.</p>
+      </div>
+      <div class="visual cards three">
+        <div class="card"><small>Module A</small><h3>Flow board</h3><p>Живая карта очередей, задержек и доступных кабинетов.</p></div>
+        <div class="card"><small>Module B</small><h3>AI routing</h3><p>Автоматические подсказки по приоритету и лучшему слоту.</p></div>
+        <div class="card"><small>Module C</small><h3>Service pulse</h3><p>Метрики NPS, возврата и нагрузки по филиалам.</p></div>
+      </div>
+    </section>
+
+    <section class="slide dark">
+      <div class="brand"><div class="mark">V</div><div>VitaFlow<small>clinical ops ai</small></div></div>
+      <div class="content">
+        <p class="eyebrow">06 / Live queue</p>
+        <h2>Каждый пик получает владельца</h2>
+        <p class="lead">Система подсвечивает риск, назначает ответственного и показывает следующее действие для администратора.</p>
+      </div>
+      <div class="visual dashboard">
+        <div class="dash-top"><p class="dash-title">Today risk queue</p><div class="pulse"></div></div>
+        <div class="queue">
+          <div class="queue-item"><div><strong>Therapy cluster</strong><span>12 patients, delay 26m</span></div><i class="badge">high</i></div>
+          <div class="queue-item"><div><strong>MRI room 02</strong><span>doctor late, reschedule suggested</span></div><i class="badge">route</i></div>
+          <div class="queue-item"><div><strong>Premium patient</strong><span>follow-up window expires in 2h</span></div><i class="badge">vip</i></div>
+          <div class="queue-item"><div><strong>Pediatrics desk</strong><span>extra nurse recommended</span></div><i class="badge">ops</i></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><div class="mark">V</div><div>VitaFlow<small>clinical ops ai</small></div></div>
+      <div class="content">
+        <p class="eyebrow">07 / Capacity map</p>
+        <h2>Загрузка видна по дням и кабинетам</h2>
+        <p class="lead">Управляющий видит не среднюю температуру, а конкретные интервалы, где теряется выручка и качество сервиса.</p>
+      </div>
+      <div class="visual heatmap">
+        <i class="cell" style="--a:.18"></i><i class="cell" style="--a:.44"></i><i class="cell" style="--a:.72"></i><i class="cell" style="--a:.32"></i><i class="cell" style="--a:.86"></i><i class="cell" style="--a:.5"></i><i class="cell" style="--a:.22"></i>
+        <i class="cell" style="--a:.34"></i><i class="cell" style="--a:.6"></i><i class="cell" style="--a:.92"></i><i class="cell" style="--a:.68"></i><i class="cell" style="--a:.44"></i><i class="cell" style="--a:.3"></i><i class="cell" style="--a:.56"></i>
+        <i class="cell" style="--a:.78"></i><i class="cell" style="--a:.42"></i><i class="cell" style="--a:.28"></i><i class="cell" style="--a:.86"></i><i class="cell" style="--a:.66"></i><i class="cell" style="--a:.4"></i><i class="cell" style="--a:.72"></i>
+        <i class="cell" style="--a:.22"></i><i class="cell" style="--a:.52"></i><i class="cell" style="--a:.76"></i><i class="cell" style="--a:.94"></i><i class="cell" style="--a:.48"></i><i class="cell" style="--a:.64"></i><i class="cell" style="--a:.3"></i>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><div class="mark">V</div><div>VitaFlow<small>clinical ops ai</small></div></div>
+      <div class="content">
+        <p class="eyebrow">08 / Экономика</p>
+        <h2>Эффект понятен в деньгах</h2>
+        <p class="lead">Рост загрузки и снижение отмен превращаются в прогноз выручки по филиалам, врачам и направлениям.</p>
+      </div>
+      <div class="visual dashboard">
+        <div class="dash-top"><p class="dash-title">Revenue recovery</p><div class="pulse"></div></div>
+        <div class="metric-row">
+          <div class="metric"><b>7.8 млн ₽</b><span>потенциал возврата</span></div>
+          <div class="metric"><b>-19%</b><span>no-show</span></div>
+          <div class="metric"><b>+11%</b><span>повторные визиты</span></div>
+        </div>
+        <div class="chart"><i class="bar" style="height:38%"></i><i class="bar" style="height:48%"></i><i class="bar" style="height:63%"></i><i class="bar" style="height:76%"></i><i class="bar" style="height:88%"></i><i class="bar" style="height:96%"></i></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><div class="mark">V</div><div>VitaFlow<small>clinical ops ai</small></div></div>
+      <div class="content">
+        <p class="eyebrow">09 / Запуск</p>
+        <h2>Пилот за 30 дней, масштаб за квартал</h2>
+        <p class="lead">Начинаем с одного филиала и трех потоков пациентов, затем подключаем сеть и управленческую аналитику.</p>
+      </div>
+      <div class="visual timeline">
+        <div class="milestone"><b>0-10</b><div><h3>Данные</h3><p>Запись, расписание, кабинеты, направления и статусы визита.</p></div></div>
+        <div class="milestone"><b>11-20</b><div><h3>Пилот</h3><p>Flow board, live queue и первые подсказки для администраторов.</p></div></div>
+        <div class="milestone"><b>21-30</b><div><h3>Метрики</h3><p>Сравнение до/после, правила маршрутизации и план масштабирования.</p></div></div>
+      </div>
+    </section>
+
+    <section class="slide dark">
+      <div class="brand"><div class="mark">V</div><div>VitaFlow<small>clinical ops ai</small></div></div>
+      <div class="content">
+        <p class="eyebrow">10 / Next step</p>
+        <h2>Готовы проверить поток пациентов?</h2>
+        <p class="lead">Мы соберем карту текущих узких мест и покажем, где клиника теряет время, деньги и доверие пациента.</p>
+      </div>
+      <div class="visual cards two">
+        <div class="card"><small>Workshop</small><h3>2 часа</h3><p>Разбор процессов записи, очередей и повторных визитов.</p></div>
+        <div class="card"><small>Pilot</small><h3>30 дней</h3><p>Запуск управленческого экрана и оценка эффекта на одном филиале.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="controls" aria-label="Навигация по презентации">
+    <button type="button" data-dir="-1" aria-label="Предыдущий слайд">‹</button>
+    <div class="counter" aria-live="polite">1 / 10</div>
+    <button type="button" data-dir="1" aria-label="Следующий слайд">›</button>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const counter = document.querySelector(".counter");
+    const params = new URLSearchParams(window.location.search);
+    const exportMode = params.get("export") === "1";
+    let current = Math.min(Math.max(Number(params.get("slide") || 1), 1), slides.length) - 1;
+
+    if (exportMode) document.body.classList.add("export");
+
+    function show(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+      counter.textContent = `${current + 1} / ${slides.length}`;
+    }
+
+    document.querySelectorAll("[data-dir]").forEach((button) => {
+      button.addEventListener("click", () => show(current + Number(button.dataset.dir)));
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === " ") show(current + 1);
+      if (event.key === "ArrowLeft") show(current - 1);
+    });
+
+    show(current);
+  </script>
+</body>
+</html>

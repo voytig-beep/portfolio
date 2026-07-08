@@ -118,7 +118,7 @@
     .motion-orbit {
       position: absolute;
       inset: 2%;
-      --orbit-radius: clamp(120px, 10vw, 165px);
+      --orbit-radius: clamp(128px, 11vw, 178px);
       transform-origin: 50% 50%;
     }
 
@@ -135,7 +135,7 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: clamp(138px, 13vw, 210px);
+      width: clamp(118px, 11vw, 185px);
       aspect-ratio: 16 / 9;
       transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--orbit-radius));
       animation: orbitFrame 24s linear infinite;
@@ -804,6 +804,7 @@
           <a href="#case">Кейсы</a>
           <a href="#asteria">Отчет</a>
           <a href="#liora">Недвижимость</a>
+          <a href="#vitaflow">HealthTech</a>
           <a href="#preview">Превью</a>
           <a href="#slides">Слайды</a>
           <a href="#formats">Форматы</a>
@@ -817,24 +818,29 @@
               <img src="01_TechVision/exports/pptx_match_slides/slide_01.png" alt="">
             </div>
           </div>
-          <div class="motion-frame" style="--angle: 72deg; --counter-angle: -72deg;">
+          <div class="motion-frame" style="--angle: 60deg; --counter-angle: -60deg;">
             <div class="motion-card">
               <img src="02_InvestPitch/exports/slides/slide_01.png" alt="">
             </div>
           </div>
-          <div class="motion-frame" style="--angle: 144deg; --counter-angle: -144deg;">
+          <div class="motion-frame" style="--angle: 120deg; --counter-angle: -120deg;">
             <div class="motion-card">
               <img src="03_ProductDeck/exports/slides/slide_01.png" alt="">
             </div>
           </div>
-          <div class="motion-frame" style="--angle: 216deg; --counter-angle: -216deg;">
+          <div class="motion-frame" style="--angle: 180deg; --counter-angle: -180deg;">
             <div class="motion-card">
               <img src="04_AnnualReport/exports/slides/slide_08.png" alt="">
             </div>
           </div>
-          <div class="motion-frame" style="--angle: 288deg; --counter-angle: -288deg;">
+          <div class="motion-frame" style="--angle: 240deg; --counter-angle: -240deg;">
             <div class="motion-card">
               <img src="05_RealEstate/exports/slides/slide_01.png" alt="">
+            </div>
+          </div>
+          <div class="motion-frame" style="--angle: 300deg; --counter-angle: -300deg;">
+            <div class="motion-card">
+              <img src="06_HealthTech/exports/slides/slide_01.png" alt="">
             </div>
           </div>
         </div>
@@ -1056,20 +1062,51 @@
       </div>
     </section>
 
+    <section class="section" id="vitaflow">
+      <div class="section-head">
+        <h2>VitaFlow: healthtech operations</h2>
+        <p class="section-note">Шестой кейс добавляет медицинский сегмент: AI-triage, загрузка врачей, очередь пациентов, операционные метрики и мягкая premium-визуализация для сети клиник.</p>
+      </div>
+
+      <div class="showcase">
+        <a class="feature-shot" href="06_HealthTech/html/index.html" aria-label="Открыть HTML-презентацию VitaFlow">
+          <img src="06_HealthTech/exports/slides/slide_01.png" alt="Обложка презентации VitaFlow">
+        </a>
+        <div class="summary">
+          <div>
+            <h3>VitaFlow HealthTech Deck</h3>
+            <p>Презентация для клинической операционной платформы: поток пациентов, AI-маршрутизация, загрузка кабинетов, экономический эффект и план пилота за 30 дней.</p>
+            <div class="tags" aria-label="Теги">
+              <span class="tag">HealthTech</span>
+              <span class="tag">AI triage</span>
+              <span class="tag">Operations</span>
+              <span class="tag">Dashboard</span>
+              <span class="tag">HTML</span>
+              <span class="tag">PNG slides</span>
+            </div>
+          </div>
+          <div class="actions">
+            <a class="button primary" href="06_HealthTech/html/index.html">Открыть HTML</a>
+            <a class="button" href="viewer.html?file=06_HealthTech/exports/slides/slide_01.png">Слайд 01</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="soon">
       <div class="section-head">
         <h2>Следующие кейсы уже намечены</h2>
-        <p class="section-note">Эти направления оставлены как будущие заготовки: они расширят портфолио в медицину, образование и эффектные демо-презентации с анимацией.</p>
+        <p class="section-note">После VitaFlow остаются будущие направления для расширения портфолио: образование, hospitality и эффектные демо-презентации с анимацией.</p>
       </div>
 
       <div class="coming" aria-label="Будущие кейсы">
         <div class="coming-card">
           <div>
-            <small>Coming soon / Healthcare</small>
-            <h3>Презентация медицинской клиники</h3>
-            <p>Доверие, экспертность, услуги, врачи, пациентский путь и спокойная визуальная подача.</p>
+            <small>Coming soon / Hospitality</small>
+            <h3>Бутик-отель или ресторан</h3>
+            <p>Атмосфера места, номера, меню, сервис, события и продающая подача для гостей или инвесторов.</p>
           </div>
-          <div class="tags"><span class="tag">Clinic</span><span class="tag">Trust</span><span class="tag">Services</span></div>
+          <div class="tags"><span class="tag">Hotel</span><span class="tag">Place</span><span class="tag">Sales</span></div>
         </div>
         <div class="coming-card">
           <div>
@@ -1178,7 +1215,7 @@
     </section>
 
     <footer class="footer">
-      <span>Портфолио презентаций. Кейсы: Noverra Digital Systems, FlowPilot, SignalDesk, Asteria Group и Liora Residence.</span>
+      <span>Портфолио презентаций. Кейсы: Noverra Digital Systems, FlowPilot, SignalDesk, Asteria Group, Liora Residence и VitaFlow.</span>
     </footer>
   </main>
   <script>
