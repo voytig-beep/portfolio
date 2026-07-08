@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Просмотр файла - портфолио</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050506;
+      --panel: rgba(12, 12, 14, .82);
+      --line: rgba(244, 244, 242, .16);
+      --text: #f4f4f2;
+      --muted: rgba(244, 244, 242, .62);
+      font-family: Inter, Manrope, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    .viewer-bar {
+      position: fixed;
+      z-index: 10;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .viewer-actions {
+      display: flex;
+      gap: 10px;
+      pointer-events: auto;
+    }
+
+    .viewer-button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--text);
+      background: var(--panel);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, .32);
+    }
+
+    .viewer-button:hover {
+      background: rgba(244, 244, 242, .14);
+    }
+
+    .viewer-title {
+      max-width: min(54vw, 760px);
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      color: var(--muted);
+      background: var(--panel);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      pointer-events: auto;
+    }
+
+    .viewer-stage {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 78px 18px 18px;
+    }
+
+    .viewer-stage iframe,
+    .viewer-stage img {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      object-fit: contain;
+      background: #050506;
+    }
+
+    .viewer-empty {
+      max-width: 520px;
+      padding: 28px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      .viewer-bar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .viewer-title {
+        max-width: 100%;
+      }
+
+      .viewer-stage {
+        padding-top: 130px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="viewer-bar">
+    <div class="viewer-actions">
+      <a class="viewer-button" href="index.html">← На главную</a>
+      <a class="viewer-button" id="open-original" href="index.html">Открыть файл</a>
+    </div>
+    <div class="viewer-title" id="viewer-title">Просмотр файла</div>
+  </div>
+
+  <main class="viewer-stage" id="viewer-stage"></main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const file = params.get("file") || "";
+    const stage = document.querySelector("#viewer-stage");
+    const title = document.querySelector("#viewer-title");
+    const openOriginal = document.querySelector("#open-original");
+    const safeFile = file.trim();
+
+    function renderEmpty(message) {
+      stage.innerHTML = `<div class="viewer-empty">${message}</div>`;
+    }
+
+    if (!safeFile || safeFile.includes("..") || safeFile.startsWith("/") || /^[a-z]+:/i.test(safeFile)) {
+      renderEmpty("Файл не выбран.");
+    } else {
+      const source = encodeURI(safeFile);
+      const lower = safeFile.toLowerCase();
+      title.textContent = safeFile.split("/").pop();
+      openOriginal.href = source;
+
+      if (lower.endsWith(".pdf")) {
+        stage.innerHTML = `<iframe src="${source}" title="${title.textContent}"></iframe>`;
+      } else if (/\.(png|jpe?g|gif|webp)$/i.test(lower)) {
+        stage.innerHTML = `<img src="${source}" alt="${title.textContent}">`;
+      } else {
+        renderEmpty("Для этого файла доступно только прямое открытие.");
+      }
+    }
+  </script>
+</body>
+</html>
