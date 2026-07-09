@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AurumData presentation</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080808;
+      --panel: rgba(19, 18, 17, .76);
+      --panel-strong: rgba(8, 8, 8, .88);
+      --line: rgba(218, 177, 98, .34);
+      --gold: #d8aa58;
+      --gold-soft: #f1d08a;
+      --bronze: #a15d35;
+      --steel: #bfc2c4;
+      --muted: #a6a19a;
+      --text: #f4efe6;
+      --shadow: rgba(0, 0, 0, .58);
+      font-family: Manrope, Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 74% 22%, rgba(216, 170, 88, .18), transparent 26%),
+        radial-gradient(circle at 86% 74%, rgba(161, 93, 53, .16), transparent 24%),
+        linear-gradient(135deg, #141313, var(--bg) 48%, #11100f);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .46;
+      background:
+        linear-gradient(90deg, transparent 0 47px, rgba(255,255,255,.035) 48px 49px),
+        linear-gradient(0deg, transparent 0 47px, rgba(255,255,255,.03) 48px 49px),
+        repeating-linear-gradient(115deg, rgba(255,255,255,.025) 0 1px, transparent 1px 9px);
+      mask-image: radial-gradient(circle at 50% 50%, #000, transparent 88%);
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(0, .95fr) minmax(460px, 1.05fr);
+      gap: 48px;
+      align-items: center;
+      padding: 82px 94px 72px;
+      opacity: 0;
+      transform: translateX(28px) scale(.985);
+      pointer-events: none;
+      transition: opacity .42s ease, transform .42s ease;
+      isolation: isolate;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+
+    .slide::after {
+      content: "";
+      position: absolute;
+      right: -9vw;
+      top: -16vh;
+      width: min(58vw, 810px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      z-index: -1;
+      opacity: .9;
+      background:
+        repeating-conic-gradient(from 10deg, rgba(216,170,88,.88) 0 8deg, rgba(42,39,35,.92) 8deg 15deg, rgba(191,194,196,.5) 15deg 19deg, rgba(17,15,13,.96) 19deg 27deg),
+        radial-gradient(circle, transparent 0 31%, rgba(216,170,88,.42) 32% 34%, transparent 35% 46%, rgba(216,170,88,.7) 47% 49%, rgba(8,8,8,.86) 50% 100%);
+      mask-image: radial-gradient(circle, transparent 0 20%, #000 21% 100%);
+      box-shadow: inset 0 0 62px rgba(0,0,0,.74), 0 28px 90px var(--shadow);
+      animation: mandalaTurn 46s linear infinite;
+    }
+
+    .brand {
+      position: absolute;
+      left: 58px;
+      top: 42px;
+      z-index: 3;
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 26px;
+      line-height: 1;
+      letter-spacing: -.04em;
+      text-shadow: 0 8px 24px rgba(0,0,0,.64);
+    }
+
+    .brand b {
+      color: var(--gold-soft);
+      font-size: 36px;
+      font-weight: 800;
+    }
+
+    .brand span {
+      color: var(--steel);
+      font-weight: 500;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 650px;
+    }
+
+    .eyebrow {
+      margin: 0 0 20px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      color: #f8f0e3;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(56px, 6vw, 104px);
+      line-height: .9;
+      font-weight: 700;
+      letter-spacing: -.05em;
+      text-shadow: 0 18px 50px rgba(0,0,0,.56);
+    }
+
+    h2 { font-size: clamp(48px, 5vw, 82px); }
+
+    .lead {
+      margin: 26px 0 0;
+      max-width: 560px;
+      color: rgba(244,239,230,.72);
+      font-size: clamp(18px, 1.65vw, 24px);
+      line-height: 1.42;
+    }
+
+    .rule {
+      width: min(330px, 100%);
+      height: 13px;
+      margin: 36px 0 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #8a5b24, var(--gold-soft), #8a5b24);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.14), 0 9px 22px rgba(0,0,0,.52);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .chip {
+      min-width: 144px;
+      padding: 14px 18px;
+      border: 1px solid rgba(216,170,88,.5);
+      border-radius: 6px;
+      background: linear-gradient(180deg, rgba(244,208,138,.25), rgba(0,0,0,.26));
+      color: #f8e2b7;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 12px 22px rgba(0,0,0,.35);
+    }
+
+    .visual {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .glass {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.035)),
+        var(--panel);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.18),
+        0 26px 80px rgba(0,0,0,.46);
+      backdrop-filter: blur(12px);
+    }
+
+    .screen {
+      min-height: 335px;
+      padding: 28px;
+    }
+
+    .screen-top,
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .mini-tabs {
+      display: flex;
+      gap: 12px;
+    }
+
+    .mini-tabs i {
+      width: 48px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.34);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
+    }
+
+    .mini-tabs i:first-child {
+      width: 68px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+    }
+
+    .chart {
+      position: relative;
+      height: 240px;
+      margin-top: 22px;
+      border-left: 1px solid rgba(255,255,255,.22);
+      border-bottom: 1px solid rgba(255,255,255,.22);
+      background:
+        linear-gradient(90deg, transparent 0 11.5%, rgba(255,255,255,.08) 12% 12.3%, transparent 12.8%),
+        linear-gradient(0deg, transparent 0 23%, rgba(255,255,255,.08) 23.5% 23.8%, transparent 24.2%);
+      background-size: 72px 100%, 100% 44px;
+      overflow: hidden;
+    }
+
+    .line {
+      position: absolute;
+      inset: 20px 18px 26px 20px;
+    }
+
+    .line svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .metric {
+      min-height: 142px;
+      padding: 22px;
+    }
+
+    .metric b {
+      display: block;
+      color: var(--gold-soft);
+      font-size: 38px;
+      line-height: 1;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      min-height: 190px;
+      padding: 24px;
+    }
+
+    .card small {
+      color: var(--gold);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .card h3 {
+      margin: 18px 0 10px;
+      font-size: 28px;
+      line-height: 1.03;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.42;
+    }
+
+    .bars {
+      display: flex;
+      align-items: end;
+      gap: 12px;
+      height: 168px;
+      padding: 24px;
+    }
+
+    .bars i {
+      flex: 1;
+      min-width: 18px;
+      border-radius: 5px 5px 0 0;
+      background: linear-gradient(180deg, var(--gold-soft), var(--gold) 46%, #5d5f60);
+      box-shadow: 0 0 24px rgba(216,170,88,.18);
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .item {
+      padding: 20px 22px;
+    }
+
+    .item b {
+      display: block;
+      color: #f4efe6;
+      font-size: 18px;
+    }
+
+    .item span {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .donut-row {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      align-items: center;
+      gap: 28px;
+      padding: 28px;
+    }
+
+    .donut {
+      width: 186px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, var(--panel-strong) 0 37%, transparent 38%),
+        conic-gradient(var(--gold-soft) 0 96deg, var(--gold) 96deg 202deg, var(--bronze) 202deg 266deg, var(--steel) 266deg 360deg);
+      box-shadow: inset 0 0 28px rgba(0,0,0,.8), 0 18px 40px rgba(0,0,0,.38);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 18px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 94px 1fr;
+      gap: 20px;
+      padding: 22px;
+      align-items: start;
+    }
+
+    .step b {
+      color: var(--gold-soft);
+      font-size: 26px;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .step h3 {
+      margin: 0;
+      font-size: 23px;
+    }
+
+    .step p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .controls,
+    .portfolio-home-link {
+      position: fixed;
+      z-index: 10;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(18, 18, 18, .78);
+      color: var(--text);
+      box-shadow: 0 16px 44px rgba(0,0,0,.4);
+      backdrop-filter: blur(14px);
+    }
+
+    .controls {
+      left: 50%;
+      bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px;
+      border-radius: 999px;
+      transform: translateX(-50%);
+    }
+
+    .controls button {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--gold-soft), #8f6127);
+      color: #080808;
+      font-size: 23px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .counter {
+      min-width: 58px;
+      color: rgba(244,239,230,.78);
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .portfolio-home-link {
+      right: 22px;
+      top: 18px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    body.export .controls,
+    body.export .portfolio-home-link {
+      display: none;
+    }
+
+    body.export .slide {
+      transition: none;
+    }
+
+    @keyframes mandalaTurn {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 920px) {
+      body { overflow: auto; }
+      .deck { height: auto; min-height: 100vh; }
+      .slide {
+        position: relative;
+        min-height: 100vh;
+        display: none;
+        grid-template-columns: 1fr;
+        padding: 94px 22px 116px;
+      }
+      .slide.active { display: grid; }
+      .brand { left: 24px; top: 24px; }
+      .slide::after { width: 92vw; right: -38vw; top: -10vh; }
+      .metric-grid,
+      .cards,
+      .donut-row { grid-template-columns: 1fr; }
+      h1, h2 { font-size: 52px; }
+      .visual { gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="portfolio-home-link" href="../../index.html" aria-label="Вернуться на главную страницу">← На главную</a>
+  <main class="deck" aria-label="Презентация AurumData">
+    <section class="slide active">
+      <div class="brand"><b>Aurum</b><span>Data</span></div>
+      <div class="content">
+        <p class="eyebrow">01 / Премиальная аналитика</p>
+        <h1>Управление на языке данных</h1>
+        <p class="lead">AurumData превращает разрозненные отчеты в единый управленческий экран: с точными цифрами, прогнозом и понятными действиями.</p>
+        <div class="rule"></div>
+        <div class="chips"><span class="chip">выручка</span><span class="chip">риски</span><span class="chip">прогноз</span></div>
+      </div>
+      <div class="visual">
+        <div class="screen glass">
+          <div class="screen-top"><div class="mini-tabs"><i></i><i></i><i></i></div><span>Q4</span></div>
+          <div class="chart">
+            <div class="line">
+              <svg viewBox="0 0 560 220" aria-hidden="true">
+                <polyline points="0,172 58,154 116,118 174,160 232,120 290,76 348,112 406,66 464,88 560,18" fill="none" stroke="#f1d08a" stroke-width="4"></polyline>
+                <polyline points="0,172 58,154 116,118 174,160 232,120 290,76 348,112 406,66 464,88 560,18" fill="none" stroke="rgba(241,208,138,.34)" stroke-width="12"></polyline>
+                <g fill="#f8f0e3" stroke="#d8aa58" stroke-width="3">
+                  <circle cx="0" cy="172" r="5"></circle><circle cx="116" cy="118" r="5"></circle><circle cx="290" cy="76" r="5"></circle><circle cx="406" cy="66" r="5"></circle><circle cx="560" cy="18" r="5"></circle>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><b>Aurum</b><span>Data</span></div>
+      <div class="content">
+        <p class="eyebrow">02 / Проблема</p>
+        <h2>Цифры есть, уверенности нет</h2>
+        <p class="lead">Руководители видят десятки таблиц, но спорят о версии правды. Решения задерживаются, потому что данные приходят поздно и без объяснения причин.</p>
+      </div>
+      <div class="visual cards">
+        <div class="card glass"><small>01</small><h3>Отчеты расходятся</h3><p>Финансы, продажи и производство считают одно и то же по разным правилам.</p></div>
+        <div class="card glass"><small>02</small><h3>Риски видны поздно</h3><p>Падение маржи или спроса замечают уже после потери денег.</p></div>
+        <div class="card glass"><small>03</small><h3>Нет причины</h3><p>График показывает отклонение, но не отвечает, что именно изменилось.</p></div>
+        <div class="card glass"><small>04</small><h3>Много ручной работы</h3><p>Команды тратят дни на сборку презентаций вместо анализа решений.</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><b>Aurum</b><span>Data</span></div>
+      <div class="content">
+        <p class="eyebrow">03 / Решение</p>
+        <h2>Единый слой управленческих данных</h2>
+        <p class="lead">AurumData собирает источники, проверяет качество, связывает показатели и выводит руководителю не таблицу, а картину бизнеса.</p>
+      </div>
+      <div class="visual stack">
+        <div class="item glass"><b>Источники</b><span>Продажи, склад, финансы, маркетинг, производство и внешние справочники.</span></div>
+        <div class="item glass"><b>Правила</b><span>Единые определения выручки, маржи, остатков, затрат и плановых отклонений.</span></div>
+        <div class="item glass"><b>Витрины</b><span>Готовые наборы показателей для совета директоров, руководителей и команд.</span></div>
+        <div class="item glass"><b>Действия</b><span>Система подсвечивает причину, ответственного и следующий шаг.</span></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><b>Aurum</b><span>Data</span></div>
+      <div class="content">
+        <p class="eyebrow">04 / Главный экран</p>
+        <h2>Панель, которую хочется открыть утром</h2>
+        <p class="lead">Темная премиальная подача делает цифры спокойными, а золото выделяет только то, где нужен взгляд руководителя.</p>
+      </div>
+      <div class="visual">
+        <div class="screen glass">
+          <div class="screen-top"><div class="mini-tabs"><i></i><i></i><i></i></div><span>план / факт</span></div>
+          <div class="chart">
+            <div class="line">
+              <svg viewBox="0 0 560 220" aria-hidden="true">
+                <path d="M0 178 C70 120, 108 148, 168 102 S260 42, 330 88 S438 132, 560 46" fill="none" stroke="#d8aa58" stroke-width="5"></path>
+                <path d="M0 184 C92 168, 154 190, 238 132 S398 92, 560 118" fill="none" stroke="#bfc2c4" stroke-width="3" opacity=".72"></path>
+                <g fill="#f1d08a"><circle cx="168" cy="102" r="6"></circle><circle cx="330" cy="88" r="6"></circle><circle cx="560" cy="46" r="6"></circle></g>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="metric-grid">
+          <div class="metric glass"><b>+14%</b><span>рост маржинальной выручки</span></div>
+          <div class="metric glass"><b>-22%</b><span>ручная сборка отчетов</span></div>
+          <div class="metric glass"><b>9 дней</b><span>ранний сигнал по рискам</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><b>Aurum</b><span>Data</span></div>
+      <div class="content">
+        <p class="eyebrow">05 / Проверка качества</p>
+        <h2>Красивые цифры должны быть надежными</h2>
+        <p class="lead">Каждый показатель хранит источник, формулу и дату обновления. Если данные расходятся, система показывает место разрыва.</p>
+      </div>
+      <div class="visual cards">
+        <div class="card glass"><small>контроль</small><h3>Свежесть</h3><p>Видно, когда источник обновился и где задержка влияет на решение.</p></div>
+        <div class="card glass"><small>формула</small><h3>Единые правила</h3><p>Показатели считаются одинаково во всех отделах и отчетах.</p></div>
+        <div class="card glass"><small>след</small><h3>Путь цифры</h3><p>Можно открыть показатель и увидеть, из каких данных он собран.</p></div>
+        <div class="card glass"><small>сигнал</small><h3>Отклонения</h3><p>Система выделяет подозрительные скачки до того, как отчет уйдет наверх.</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><b>Aurum</b><span>Data</span></div>
+      <div class="content">
+        <p class="eyebrow">06 / Прогноз</p>
+        <h2>Не только факт, но и вероятный сценарий</h2>
+        <p class="lead">AurumData показывает, куда движется выручка, запас, спрос и денежный поток, если ничего не менять.</p>
+      </div>
+      <div class="visual">
+        <div class="screen glass">
+          <div class="screen-top"><div class="mini-tabs"><i></i><i></i><i></i></div><span>прогноз 90 дней</span></div>
+          <div class="chart">
+            <div class="line">
+              <svg viewBox="0 0 560 220" aria-hidden="true">
+                <polyline points="0,162 64,144 128,130 192,108 256,94 320,76" fill="none" stroke="#f1d08a" stroke-width="5"></polyline>
+                <polyline points="320,76 384,72 448,52 512,38 560,24" fill="none" stroke="#f1d08a" stroke-width="5" stroke-dasharray="10 10"></polyline>
+                <path d="M320 92 C390 112 470 82 560 72 L560 8 C470 30 390 44 320 62 Z" fill="rgba(216,170,88,.16)"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="item glass"><b>Сценарий роста</b><span>Что изменится при увеличении спроса, цены или производственной мощности.</span></div>
+          <div class="item glass"><b>Сценарий риска</b><span>Где прибыль проседает при задержке поставок или росте затрат.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><b>Aurum</b><span>Data</span></div>
+      <div class="content">
+        <p class="eyebrow">07 / Финансовый эффект</p>
+        <h2>Данные становятся денежным контуром</h2>
+        <p class="lead">Польза видна не в количестве графиков, а в скорости решений, снижении потерь и росте управляемой маржи.</p>
+      </div>
+      <div class="visual">
+        <div class="donut-row glass">
+          <div class="donut" aria-hidden="true"></div>
+          <div class="stack">
+            <div class="row"><strong>Маржа</strong><span>42%</span></div>
+            <div class="row"><strong>Остатки</strong><span>27%</span></div>
+            <div class="row"><strong>Спрос</strong><span>19%</span></div>
+            <div class="row"><strong>Риски</strong><span>12%</span></div>
+          </div>
+        </div>
+        <div class="metric-grid">
+          <div class="metric glass"><b>3,8x</b><span>быстрее подготовка к совету</span></div>
+          <div class="metric glass"><b>11%</b><span>снижение замороженных запасов</span></div>
+          <div class="metric glass"><b>24ч</b><span>от сигнала до решения</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><b>Aurum</b><span>Data</span></div>
+      <div class="content">
+        <p class="eyebrow">08 / Направления</p>
+        <h2>Одна система для разных управленческих задач</h2>
+        <p class="lead">Витрины можно собирать под роль: собственник видит капитал, директор — план, команда — конкретное отклонение.</p>
+      </div>
+      <div class="visual cards">
+        <div class="card glass"><small>собственник</small><h3>Стоимость бизнеса</h3><p>Динамика выручки, маржи, долга, оборотного капитала и риска.</p></div>
+        <div class="card glass"><small>директор</small><h3>План и факт</h3><p>Ключевые отклонения по филиалам, категориям, каналам и регионам.</p></div>
+        <div class="card glass"><small>финансы</small><h3>Денежный поток</h3><p>Прогноз поступлений, платежей, кассовых разрывов и резервов.</p></div>
+        <div class="card glass"><small>команды</small><h3>Причина и действие</h3><p>Карточки задач, ответственные, срок реакции и ожидаемый эффект.</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><b>Aurum</b><span>Data</span></div>
+      <div class="content">
+        <p class="eyebrow">09 / Запуск</p>
+        <h2>От первого экрана до управленческого ритма</h2>
+        <p class="lead">Начинаем с одного управленческого вопроса, быстро собираем первый экран и расширяем систему по мере доверия к цифрам.</p>
+      </div>
+      <div class="visual timeline">
+        <div class="step glass"><b>01</b><div><h3>Диагностика</h3><p>Выбираем 5-7 показателей, которые реально влияют на решения.</p></div></div>
+        <div class="step glass"><b>02</b><div><h3>Первый экран</h3><p>Подключаем источники, правила расчета и визуальный управленческий слой.</p></div></div>
+        <div class="step glass"><b>03</b><div><h3>Ритм решений</h3><p>Закрепляем регулярный обзор, сигналы, задачи и ответственных.</p></div></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="brand"><b>Aurum</b><span>Data</span></div>
+      <div class="content">
+        <p class="eyebrow">10 / Следующий шаг</p>
+        <h2>Соберем первый золотой экран данных</h2>
+        <p class="lead">За одну рабочую встречу определим главный управленческий вопрос и покажем, какие данные уже можно превратить в решение.</p>
+        <div class="rule"></div>
+      </div>
+      <div class="visual">
+        <div class="bars glass" aria-hidden="true">
+          <i style="height:34%"></i><i style="height:52%"></i><i style="height:72%"></i><i style="height:94%"></i><i style="height:66%"></i><i style="height:88%"></i>
+        </div>
+        <div class="cards">
+          <div class="card glass"><small>встреча</small><h3>90 минут</h3><p>Разбор источников, показателей и болевых решений.</p></div>
+          <div class="card glass"><small>результат</small><h3>1 экран</h3><p>Концепт первого управленческого экрана в стиле AurumData.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="controls" aria-label="Навигация по презентации">
+    <button type="button" data-dir="-1" aria-label="Предыдущий слайд">‹</button>
+    <div class="counter" aria-live="polite">1 / 10</div>
+    <button type="button" data-dir="1" aria-label="Следующий слайд">›</button>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const counter = document.querySelector(".counter");
+    const params = new URLSearchParams(window.location.search);
+    const exportMode = params.get("export") === "1";
+    let current = Math.min(Math.max(Number(params.get("slide") || 1), 1), slides.length) - 1;
+
+    if (exportMode) document.body.classList.add("export");
+
+    function show(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+      counter.textContent = `${current + 1} / ${slides.length}`;
+    }
+
+    document.querySelectorAll("[data-dir]").forEach((button) => {
+      button.addEventListener("click", () => show(current + Number(button.dataset.dir)));
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === " ") show(current + 1);
+      if (event.key === "ArrowLeft") show(current - 1);
+    });
+
+    show(current);
+  </script>
+</body>
+</html>
