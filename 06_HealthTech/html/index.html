@@ -104,9 +104,9 @@
     }
 
     .brand-globe {
-      width: 76px;
-      height: 76px;
-      margin: -18px -2px -18px -12px;
+      width: 104px;
+      height: 104px;
+      margin: -18px 22px -18px -4px;
       display: inline-block;
       flex: 0 0 auto;
     }
@@ -493,7 +493,12 @@
         padding: 96px 22px 110px;
       }
       .slide.active { display: grid; }
-      .brand { top: 22px; left: 22px; }
+      .brand { top: 30px; left: 32px; }
+      .brand-globe {
+        width: 78px;
+        height: 78px;
+        margin: 0 18px 0 0;
+      }
       h1, h2 { font-size: 48px; }
       .cards.two,
       .cards.three,
@@ -678,7 +683,7 @@
     <button type="button" data-dir="1" aria-label="Следующий слайд">›</button>
   </div>
 
-  <script type="module" src="./vita-globe.js?v=20260709-vita-globe"></script>
+  <script type="module" src="./vita-globe.js?v=20260709-vita-globe-premium"></script>
   <script>
     const slides = [...document.querySelectorAll(".slide")];
     const counter = document.querySelector(".counter");
